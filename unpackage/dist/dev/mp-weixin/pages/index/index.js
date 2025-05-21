@@ -153,104 +153,54 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _vuex = __webpack_require__(/*! vuex */ 98);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var AiAssistant = function AiAssistant() {
   __webpack_require__.e(/*! require.ensure | components/AiAssistant */ "components/AiAssistant").then((function () {
     return resolve(__webpack_require__(/*! @/components/AiAssistant.vue */ 80));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
+var CustomNavBar = function CustomNavBar() {
+  __webpack_require__.e(/*! require.ensure | components/CustomNavBar */ "components/CustomNavBar").then((function () {
+    return resolve(__webpack_require__(/*! @/components/CustomNavBar.vue */ 103));
+  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+};
 var _default = {
   components: {
-    AiAssistant: AiAssistant
+    AiAssistant: AiAssistant,
+    CustomNavBar: CustomNavBar
   },
   data: function data() {
     return {
-      title: '校园益友',
-      bannerList: [{
-        image: '/static/images/banner1.png'
-      }, {
-        image: '/static/images/banner2.png'
-      }, {
-        image: '/static/images/banner3.png'
-      }],
-      quickAccessList: [{
-        name: '探店',
-        icon: '/static/icons/explore.png',
-        path: '/pages/explore/index'
-      }, {
-        name: '论坛',
-        icon: '/static/icons/forum.png',
-        path: '/pages/forum/index'
-      }, {
-        name: '商城',
-        icon: '/static/icons/shop.png',
-        path: '/pages/mall/index'
-      }, {
-        name: '代取',
-        icon: '/static/icons/express.png',
-        path: '/pages/proxy/index'
-      }, {
-        name: 'AI助手',
-        icon: '/static/icons/ai.png',
-        path: '/pages/ai/index'
-      }],
-      postList: [{
-        id: 1,
-        username: '青竹书院',
-        avatar: '/static/avatars/user1.png',
-        time: '10分钟前',
-        title: '校内最值得打卡的五家美食店铺',
-        content: '经过一个月的探店，终于整理出了校内最值得打卡的五家店铺，每一家都有其独特的风味...',
-        images: ['/static/posts/food1.png', '/static/posts/food2.png'],
-        views: 128,
-        comments: 32,
-        likes: 64
-      }, {
-        id: 2,
-        username: '墨客飘香',
-        avatar: '/static/avatars/user2.png',
-        time: '1小时前',
-        title: '传统文化讲座回顾',
-        content: '今天的传统文化讲座干货满满，特别是关于汉服的部分，分享一些笔记和现场照片...',
-        images: ['/static/posts/culture1.png'],
-        views: 86,
-        comments: 15,
-        likes: 42
-      }],
-      shopList: [{
-        id: 1,
-        name: '悦读书坊',
-        image: '/static/shops/bookstore.png',
-        rating: 4.8
-      }, {
-        id: 2,
-        name: '墨香茶馆',
-        image: '/static/shops/teahouse.png',
-        rating: 4.9
-      }, {
-        id: 3,
-        name: '锦绣服坊',
-        image: '/static/shops/clothing.png',
-        rating: 4.7
-      }, {
-        id: 4,
-        name: '淳风小厨',
-        image: '/static/shops/restaurant.png',
-        rating: 4.6
-      }]
+      title: '校园益友'
     };
   },
+  computed: _objectSpread({}, (0, _vuex.mapState)(['bannerList', 'quickAccessList', 'postList', 'shopList'])),
   onLoad: function onLoad() {
     // Initial page loading logic
   },
   methods: {
     navigateTo: function navigateTo(path) {
-      uni.navigateTo({
-        url: path
-      });
+      // Ensure path has the correct format
+      if (path.startsWith('./')) {
+        // Convert relative path to absolute path for index page
+        var absolutePath = "/pages".concat(path.substring(1));
+        uni.navigateTo({
+          url: absolutePath
+        });
+      } else {
+        // Use the path as-is if it already has the correct format
+        uni.navigateTo({
+          url: path
+        });
+      }
     },
     viewPostDetail: function viewPostDetail(id) {
       uni.navigateTo({

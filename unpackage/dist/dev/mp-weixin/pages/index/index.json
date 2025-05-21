@@ -1,6 +1,7 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "ai-assistant": "/components/AiAssistant"
+    "ai-assistant": "/components/AiAssistant",
+    "custom-nav-bar": "/components/CustomNavBar"
   }
 }

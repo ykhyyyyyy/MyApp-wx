@@ -2,6 +2,8 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			// Load user data from storage if available
+			this.$store.dispatch('user/loadUserFromStorage')
 		},
 		onShow: function() {
 			console.log('App Show')

@@ -1,13 +1,7 @@
 <template>
 	<view class="container">
-		<!-- 自定义中国风导航栏 -->
-		<view class="custom-nav">
-			<image class="nav-bg" src="/static/images/nav-proxy.png" mode="aspectFill"></image>
-			<view class="nav-content">
-				<text class="nav-title">代取速递</text>
-				<text class="nav-subtitle">校园速递服务</text>
-			</view>
-		</view>
+		<!-- Use the custom navigation bar component -->
+		<custom-nav-bar title="代取速递" subtitle="校园速递服务" :show-back="true"></custom-nav-bar>
 		
 		<view class="header">
 			<view class="search-box">
@@ -97,10 +91,12 @@
 
 <script>
 	import AiAssistant from '@/components/AiAssistant.vue';
+	import CustomNavBar from '@/components/CustomNavBar.vue';
 	
 	export default {
 		components: {
-			AiAssistant
+			AiAssistant,
+			CustomNavBar
 		},
 		data() {
 			return {
@@ -126,47 +122,6 @@
 		background-color: #F8F3E6; /* 宣纸色 */
 		min-height: 100vh;
 		background-image: url('/static/decoration/paper-texture.png');
-	}
-	
-	/* 自定义中国风导航栏 */
-	.custom-nav {
-		position: relative;
-		height: 180rpx;
-		padding-top: var(--status-bar-height);
-		overflow: hidden;
-	}
-	
-	.nav-bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 1;
-	}
-	
-	.nav-content {
-		position: relative;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		z-index: 2;
-	}
-	
-	.nav-title {
-		font-family: "FangSong", serif;
-		font-size: 40rpx;
-		font-weight: bold;
-		color: #333;
-		text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
-	}
-	
-	.nav-subtitle {
-		font-size: 20rpx;
-		color: #666;
-		margin-top: 4rpx;
 	}
 	
 	.header {

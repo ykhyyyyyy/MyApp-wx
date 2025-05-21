@@ -141,9 +141,15 @@ var AiAssistant = function AiAssistant() {
     return resolve(__webpack_require__(/*! @/components/AiAssistant.vue */ 80));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
+var CustomNavBar = function CustomNavBar() {
+  __webpack_require__.e(/*! require.ensure | components/CustomNavBar */ "components/CustomNavBar").then((function () {
+    return resolve(__webpack_require__(/*! @/components/CustomNavBar.vue */ 103));
+  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+};
 var _default = {
   components: {
-    AiAssistant: AiAssistant
+    AiAssistant: AiAssistant,
+    CustomNavBar: CustomNavBar
   },
   data: function data() {
     return {

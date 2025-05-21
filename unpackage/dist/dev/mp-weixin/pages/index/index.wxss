@@ -2,62 +2,9 @@
 .container {
 	background-color: #F8F7F2; /* Light cream background */
 	min-height: 100vh;
-	background-image: url(data:image/png;base64,IA==);
+	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSBzdWJ0bGUgcGFwZXIgdGV4dHVyZSBwYXR0ZXJuIHN1aXRhYmxlIGZvciB0aGUgYXBwbGljYXRpb24gYmFja2dyb3VuZC5dIA==);
 	background-repeat: repeat;
 }
-
-/* 自定义中国风导航栏 */
-.custom-nav {
-	position: relative;
-	height: 180rpx;
-	padding-top: 25px;
-	overflow: hidden;
-}
-.nav-bg {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-}
-.nav-content {
-	position: relative;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	z-index: 2;
-}
-.nav-title {
-	font-family: "FangSong", serif;
-	font-size: 40rpx;
-	font-weight: bold;
-	color: #333;
-	text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
-	letter-spacing: 8rpx; /* 增加字间距，更有书法感 */
-}
-.nav-subtitle {
-	font-size: 20rpx;
-	color: #666;
-	margin-top: 4rpx;
-}
-
-/* 添加装饰印章 */
-.nav-seal {
-	position: absolute;
-	right: 40rpx;
-	top: 50%;
-	-webkit-transform: translateY(-30%);
-	        transform: translateY(-30%);
-	width: 80rpx;
-	height: 80rpx;
-	opacity: 0.8;
-	z-index: 3;
-}
-
-/* Header styling */
 .header {
 	padding: 20rpx 30rpx;
 }
@@ -73,7 +20,7 @@
 	border: 1rpx solid #e0c9d1;
 	/* 添加卷轴样式边框 */
 	box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
-	background-image: url(data:image/png;base64,IA==);
+	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSB2ZXJ5IHN1YnRsZSBwYXBlciB0ZXh0dXJlIGZvciBzZWFyY2ggaW5wdXQgYmFja2dyb3VuZHMgYW5kIG90aGVyIGVsZW1lbnRzLl0g);
 }
 
 /* Banner styling with scroll decoration */
@@ -206,7 +153,7 @@
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 	border-left: 6rpx solid #E0C9D1; /* Secondary color */
 	position: relative;
-	background-image: url(data:image/png;base64,IA==);
+	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSB2ZXJ5IHN1YnRsZSBwYXBlciB0ZXh0dXJlIGZvciBzZWFyY2ggaW5wdXQgYmFja2dyb3VuZHMgYW5kIG90aGVyIGVsZW1lbnRzLl0g);
 	background-repeat: repeat;
 }
 .post-item::after {
@@ -216,7 +163,7 @@
 	bottom: 20rpx;
 	width: 60rpx;
 	height: 60rpx;
-	background-image: url(data:image/png;base64,IA==);
+	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSB0cmFkaXRpb25hbCBDaGluZXNlIGNvcm5lciBkZWNvcmF0aW9uIHBhdHRlcm4uXSA=);
 	background-size: contain;
 	background-repeat: no-repeat;
 	opacity: 0.15;

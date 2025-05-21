@@ -1,15 +1,7 @@
 <template>
 	<view class="container">
-		<!-- 自定义中国风导航栏 -->
-		<view class="custom-nav">
-			<image class="nav-bg" src="/static/images/nav-bg.png" mode="aspectFill"></image>
-			<view class="nav-content">
-				<text class="nav-title">校园益友</text>
-				<text class="nav-subtitle">Campus Friend</text>
-			</view>
-			<!-- 添加装饰印章 -->
-			<image class="nav-seal" src="/static/decoration/seal.png" mode="aspectFit"></image>
-		</view>
+		<!-- Use the custom navigation bar component with back button disabled -->
+		<custom-nav-bar title="校园益友" subtitle="Campus Friend" :show-back="false"></custom-nav-bar>
 
 		<!-- Header with Chinese-style design -->
 		<view class="header">
@@ -48,7 +40,7 @@
 				<image class="section-title-decoration" src="/static/decoration/title-left.png" mode="aspectFit"></image>
 				<text class="section-title">热门帖子</text>
 				<image class="section-title-decoration" src="/static/decoration/title-right.png" mode="aspectFit"></image>
-				<view class="section-more" @click="navigateTo('/pages/forum/index')">
+				<view class="section-more" @click="navigateTo('./forum/index')">
 					<text>查看更多</text>
 					<image src="/static/icons/arrow-right.png" class="icon-arrow"></image>
 				</view>
@@ -92,28 +84,7 @@
 			</view>
 		</view>
 		
-		<!-- Recommended shops section -->
-		<view class="section shop-section">
-			<view class="section-header">
-				<image class="section-title-decoration" src="/static/decoration/title-left.png" mode="aspectFit"></image>
-				<text class="section-title">推荐店铺</text>
-				<image class="section-title-decoration" src="/static/decoration/title-right.png" mode="aspectFit"></image>
-				<view class="section-more" @click="navigateTo('/pages/shops/index')">
-					<text>更多店铺</text>
-					<image src="/static/icons/arrow-right.png" class="icon-arrow"></image>
-				</view>
-			</view>
-			<scroll-view scroll-x class="shop-scroll" show-scrollbar="false">
-				<view class="shop-item" v-for="(shop, index) in shopList" :key="index" @click="viewShopDetail(shop.id)">
-					<image :src="shop.image" mode="aspectFill" class="shop-image"></image>
-					<text class="shop-name">{{shop.name}}</text>
-					<view class="shop-rating">
-						<image src="/static/icons/star-fill.png" class="icon-star"></image>
-						<text>{{shop.rating}}</text>
-					</view>
-				</view>
-			</scroll-view>
-		</view>
+		
 		
 		<!-- 页脚装饰元素 -->
 		<view class="footer-decoration">
@@ -127,88 +98,40 @@
 
 <script>
 import AiAssistant from '@/components/AiAssistant.vue';
+import CustomNavBar from '@/components/CustomNavBar.vue';
+import { mapState } from 'vuex';
 
 export default {
 	components: {
-		AiAssistant
+		AiAssistant,
+		CustomNavBar
 	},
 	data() {
 		return {
-			title: '校园益友',
-			bannerList: [
-				{ image: '/static/images/banner1.png' },
-				{ image: '/static/images/banner2.png' },
-				{ image: '/static/images/banner3.png' }
-			],
-			quickAccessList: [
-				{ name: '探店', icon: '/static/icons/explore.png', path: '/pages/explore/index' },
-				{ name: '论坛', icon: '/static/icons/forum.png', path: '/pages/forum/index' },
-				{ name: '商城', icon: '/static/icons/shop.png', path: '/pages/mall/index' },
-				{ name: '代取', icon: '/static/icons/express.png', path: '/pages/proxy/index' },
-				{ name: 'AI助手', icon: '/static/icons/ai.png', path: '/pages/ai/index' }
-			],
-			postList: [
-				{
-					id: 1,
-					username: '青竹书院',
-					avatar: '/static/avatars/user1.png',
-					time: '10分钟前',
-					title: '校内最值得打卡的五家美食店铺',
-					content: '经过一个月的探店，终于整理出了校内最值得打卡的五家店铺，每一家都有其独特的风味...',
-					images: ['/static/posts/food1.png', '/static/posts/food2.png'],
-					views: 128,
-					comments: 32,
-					likes: 64
-				},
-				{
-					id: 2,
-					username: '墨客飘香',
-					avatar: '/static/avatars/user2.png',
-					time: '1小时前',
-					title: '传统文化讲座回顾',
-					content: '今天的传统文化讲座干货满满，特别是关于汉服的部分，分享一些笔记和现场照片...',
-					images: ['/static/posts/culture1.png'],
-					views: 86,
-					comments: 15,
-					likes: 42
-				}
-			],
-			shopList: [
-				{
-					id: 1,
-					name: '悦读书坊',
-					image: '/static/shops/bookstore.png',
-					rating: 4.8
-				},
-				{
-					id: 2,
-					name: '墨香茶馆',
-					image: '/static/shops/teahouse.png',
-					rating: 4.9
-				},
-				{
-					id: 3,
-					name: '锦绣服坊',
-					image: '/static/shops/clothing.png',
-					rating: 4.7
-				},
-				{
-					id: 4,
-					name: '淳风小厨',
-					image: '/static/shops/restaurant.png',
-					rating: 4.6
-				}
-			]
+			title: '校园益友'
 		}
+	},
+	computed: {
+		...mapState(['bannerList', 'quickAccessList', 'postList', 'shopList'])
 	},
 	onLoad() {
 		// Initial page loading logic
 	},
 	methods: {
 		navigateTo(path) {
-			uni.navigateTo({
-				url: path
-			});
+			// Ensure path has the correct format
+			if (path.startsWith('./')) {
+				// Convert relative path to absolute path for index page
+				const absolutePath = `/pages${path.substring(1)}`;
+				uni.navigateTo({
+					url: absolutePath
+				});
+			} else {
+				// Use the path as-is if it already has the correct format
+				uni.navigateTo({
+					url: path
+				});
+			}
 		},
 		viewPostDetail(id) {
 			uni.navigateTo({
@@ -232,61 +155,6 @@ export default {
 		background-repeat: repeat;
 	}
 	
-	/* 自定义中国风导航栏 */
-	.custom-nav {
-		position: relative;
-		height: 180rpx;
-		padding-top: var(--status-bar-height);
-		overflow: hidden;
-	}
-	
-	.nav-bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 1;
-	}
-	
-	.nav-content {
-		position: relative;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		z-index: 2;
-	}
-	
-	.nav-title {
-		font-family: "FangSong", serif;
-		font-size: 40rpx;
-		font-weight: bold;
-		color: #333;
-		text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
-		letter-spacing: 8rpx; /* 增加字间距，更有书法感 */
-	}
-	
-	.nav-subtitle {
-		font-size: 20rpx;
-		color: #666;
-		margin-top: 4rpx;
-	}
-	
-	/* 添加装饰印章 */
-	.nav-seal {
-		position: absolute;
-		right: 40rpx;
-		top: 50%;
-		transform: translateY(-30%);
-		width: 80rpx;
-		height: 80rpx;
-		opacity: 0.8;
-		z-index: 3;
-	}
-	
-	/* Header styling */
 	.header {
 		padding: 20rpx 30rpx;
 	}

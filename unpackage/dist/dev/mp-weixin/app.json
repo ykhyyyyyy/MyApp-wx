@@ -5,7 +5,8 @@
     "pages/forum/index",
     "pages/mall/index",
     "pages/user/index",
-    "pages/proxy/index"
+    "pages/proxy/index",
+    "pages/ai/index"
   ],
   "subPackages": [],
   "window": {

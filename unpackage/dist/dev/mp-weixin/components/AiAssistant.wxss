@@ -107,7 +107,7 @@
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.15);
-	background-image: url(data:image/png;base64,IA==);
+	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSBzdWJ0bGUgcGFwZXIgdGV4dHVyZSBwYXR0ZXJuIHN1aXRhYmxlIGZvciB0aGUgYXBwbGljYXRpb24gYmFja2dyb3VuZC5dIA==);
 	border: 6rpx solid #8A3324; /* 朱砂红 */
 	overflow: hidden;
 }
