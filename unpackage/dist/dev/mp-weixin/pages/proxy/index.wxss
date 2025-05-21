@@ -1,0 +1,203 @@
+
+.container {
+	background-color: #F8F3E6; /* 宣纸色 */
+	min-height: 100vh;
+	background-image: url(data:image/png;base64,IA==);
+}
+
+/* 自定义中国风导航栏 */
+.custom-nav {
+	position: relative;
+	height: 180rpx;
+	padding-top: 25px;
+	overflow: hidden;
+}
+.nav-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+.nav-content {
+	position: relative;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+}
+.nav-title {
+	font-family: "FangSong", serif;
+	font-size: 40rpx;
+	font-weight: bold;
+	color: #333;
+	text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
+}
+.nav-subtitle {
+	font-size: 20rpx;
+	color: #666;
+	margin-top: 4rpx;
+}
+.header {
+	padding: 20rpx 30rpx;
+}
+.search-input-wrapper {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	border-radius: 30rpx;
+	padding: 0 20rpx;
+	border: 1rpx solid #D7C9AA; /* 淡竹色 */
+}
+.search-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 10rpx;
+}
+.search-input {
+	flex: 1;
+	border: none;
+	background: transparent;
+	font-size: 28rpx;
+	padding: 16rpx 0;
+	outline: none;
+}
+
+/* 服务类型 */
+.service-types {
+	display: flex;
+	justify-content: space-around;
+	padding: 30rpx;
+	margin: 0 30rpx 30rpx;
+	background-color: #fff;
+	border-radius: 20rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #D7C9AA; /* 淡竹色 */
+}
+.service-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20rpx;
+	border-radius: 10rpx;
+}
+.service-item.active {
+	background-color: rgba(138, 51, 36, 0.1); /* 朱砂红透明 */
+	border: 2rpx solid #8A3324; /* 朱砂红 */
+}
+.service-icon {
+	width: 80rpx;
+	height: 80rpx;
+	margin-bottom: 10rpx;
+}
+.service-text {
+	font-size: 28rpx;
+	color: #333;
+	font-family: "KaiTi", "FangSong";
+}
+
+/* 表单样式 */
+.express-form {
+	margin: 0 30rpx 30rpx;
+	padding: 30rpx;
+	background-color: #fff;
+	border-radius: 20rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #D7C9AA; /* 淡竹色 */
+}
+.form-title {
+	display: flex;
+	align-items: center;
+	margin-bottom: 30rpx;
+	font-size: 32rpx;
+	color: #333;
+	font-weight: bold;
+	font-family: "FangSong", serif;
+}
+.title-decoration {
+	width: 40rpx;
+	height: 40rpx;
+	margin-right: 10rpx;
+}
+.form-item {
+	margin-bottom: 20rpx;
+}
+.form-label {
+	display: block;
+	font-size: 28rpx;
+	color: #8C7853; /* 古铜色 */
+	margin-bottom: 10rpx;
+}
+.form-input {
+	width: 100%;
+	height: 80rpx;
+	background-color: #f8f8f8;
+	border-radius: 10rpx;
+	padding: 0 20rpx;
+	font-size: 28rpx;
+	color: #333;
+	border: 1rpx solid #D7C9AA; /* 淡竹色 */
+}
+.picker-text {
+	height: 80rpx;
+	line-height: 80rpx;
+	color: #999;
+}
+.form-textarea {
+	width: 100%;
+	height: 160rpx;
+	background-color: #f8f8f8;
+	border-radius: 10rpx;
+	padding: 20rpx;
+	font-size: 28rpx;
+	color: #333;
+	border: 1rpx solid #D7C9AA; /* 淡竹色 */
+}
+.submit-btn {
+	height: 90rpx;
+	background-color: #8A3324; /* 朱砂红 */
+	color: #fff;
+	border-radius: 45rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 32rpx;
+	margin-top: 40rpx;
+	box-shadow: 0 6rpx 10rpx rgba(138, 51, 36, 0.3);
+	font-family: "FangSong", serif;
+}
+
+/* 服务说明 */
+.proxy-info {
+	margin: 0 30rpx 30rpx;
+	padding: 30rpx;
+	background-color: #fff;
+	border-radius: 20rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #D7C9AA; /* 淡竹色 */
+}
+.info-title {
+	font-size: 30rpx;
+	color: #333;
+	margin-bottom: 16rpx;
+	font-weight: bold;
+	font-family: "FangSong", serif;
+}
+.info-item {
+	display: flex;
+	margin-bottom: 10rpx;
+}
+.info-dot {
+	color: #8A3324; /* 朱砂红 */
+	margin-right: 10rpx;
+	font-weight: bold;
+}
+.info-text {
+	font-size: 26rpx;
+	color: #8C7853; /* 古铜色 */
+	line-height: 1.5;
+}
+
