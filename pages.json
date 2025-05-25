@@ -52,5 +52,33 @@
 	"globalStyle": {
 		"backgroundColor": "#F8F3E6"
 	},
+	"tabBar": {
+		"color": "#8C7853",
+		"selectedColor": "#8A3324",
+		"backgroundColor": "#F8F3E6",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/explore/index",
+				"text": "探店"
+			},
+			{
+				"pagePath": "pages/forum/index",
+				"text": "论坛"
+			},
+			{
+				"pagePath": "pages/mall/index",
+				"text": "商城"
+			},
+			{
+				"pagePath": "pages/user/index",
+				"text": "我的"
+			}
+		]
+	},
 	"uniIdRouter": {}
 }

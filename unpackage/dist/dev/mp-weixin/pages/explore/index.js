@@ -146,15 +146,9 @@ var AiAssistant = function AiAssistant() {
     return resolve(__webpack_require__(/*! @/components/AiAssistant.vue */ 106));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
-var TabBar = function TabBar() {
-  __webpack_require__.e(/*! require.ensure | components/TabBar */ "components/TabBar").then((function () {
-    return resolve(__webpack_require__(/*! @/components/TabBar.vue */ 131));
-  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
-};
 var _default = {
   components: {
-    AiAssistant: AiAssistant,
-    TabBar: TabBar
+    AiAssistant: AiAssistant
   },
   data: function data() {
     return {};

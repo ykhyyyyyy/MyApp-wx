@@ -6,12 +6,9 @@
 		<!-- Sidebar for chat history (hidden by default) -->
 		<view class="chat-sidebar" :class="{ 'sidebar-open': showSidebar }">
 			<view class="sidebar-header">
-				<text class="sidebar-title">
-					<image src="/static/icons/chat-history.png" class="sidebar-title-icon"></image>
-					会话历史
-				</text>
+				<text class="sidebar-title">会话历史</text>
 				<view class="sidebar-close" @click="toggleSidebar">
-					<image src="/static/icons/close.png" class="close-icon"></image>
+					<text class="close-icon">×</text>
 				</view>
 			</view>
 			
@@ -22,11 +19,11 @@
 						<view class="dot"></view>
 						<view class="dot"></view>
 					</view>
-				</view>
-				
+					</view>
+					
 				<view v-else-if="chatHistory.length === 0" class="empty-history">
 					<text>暂无历史会话</text>
-				</view>
+						</view>
 				
 				<view 
 					v-else 
@@ -37,21 +34,18 @@
 					:class="{ 'active-session': currentSession && currentSession.id === session.id }"
 				>
 					<view class="history-title-row">
-						<image src="/static/icons/session.png" class="history-item-icon"></image>
 						<text class="history-title">会话 {{ index + 1 }}</text>
 					</view>
 					<view class="history-date-row">
-						<image src="/static/icons/calendar.png" class="history-date-icon"></image>
 						<text class="history-date">{{ formatDate(session.createdAt) }}</text>
 					</view>
 				</view>
 			</view>
 			
 			<view class="new-chat" @click="startNewChat">
-				<image src="/static/icons/new-chat.png" class="new-chat-icon"></image>
 				<text class="new-chat-text">新建会话</text>
-			</view>
-		</view>
+				</view>
+					</view>
 		
 		<!-- Main chat interface -->
 		<view class="main-content">
@@ -62,7 +56,7 @@
 						<image src="/static/icons/history.png" class="history-icon"></image>
 						<text class="history-text">历史记录</text>
 					</view>
-				</view>
+			</view>
 			
 			<view class="chat-container">
 					<!-- Removed chat header with history button -->
@@ -95,7 +89,7 @@
 									</view>
 								</view>
 							</view>
-						</view>
+					</view>
 					</scroll-view>
 				
 				<view class="chat-input-area">
@@ -111,10 +105,7 @@
 							class="send-btn" 
 							@click="sendMessage" 
 							:disabled="isLoading || !userInput.trim()"
-						>
-							<image src="/static/icons/send.png" class="send-icon" v-if="!isLoading"></image>
-							<image src="/static/icons/loading.png" class="loading-icon" v-else></image>
-						</button>
+						>发送</button>
 					</view>
 				</view>
 			</view>
@@ -1143,8 +1134,8 @@ export default {
 }
 
 .close-icon {
-	width: 40rpx;
-	height: 40rpx;
+	font-size: 40rpx;
+	color: #666;
 }
 
 .chat-history-list {
@@ -1293,62 +1284,5 @@ export default {
 	.chat-messages {
 		height: calc(75vh - 140rpx);
 	}
-}
-
-.send-icon {
-	width: 40rpx;
-	height: 40rpx;
-}
-
-.loading-icon {
-	width: 40rpx;
-	height: 40rpx;
-	animation: rotating 2s linear infinite;
-}
-
-@keyframes rotating {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-.sidebar-title-icon {
-	width: 40rpx;
-	height: 40rpx;
-	margin-right: 10rpx;
-	vertical-align: middle;
-}
-
-.new-chat-icon {
-	width: 32rpx;
-	height: 32rpx;
-	margin-right: 10rpx;
-	vertical-align: middle;
-}
-
-.history-item-icon {
-	width: 28rpx;
-	height: 28rpx;
-	margin-right: 8rpx;
-	vertical-align: middle;
-}
-
-.history-date-icon {
-	width: 24rpx;
-	height: 24rpx;
-	margin-right: 6rpx;
-	opacity: 0.6;
-	vertical-align: middle;
-}
-
-.message-bubble-icon {
-	width: 36rpx;
-	height: 36rpx;
-	margin-right: 6rpx;
-	vertical-align: middle;
-	opacity: 0.7;
 }
 </style> 

@@ -1,5 +1,5 @@
 <template>
-	<view class="container page-content-with-tabbar">
+	<view class="container">
 		<!-- 自定义中国风导航栏 -->
 		<view class="custom-nav">
 			<image class="nav-bg" src="/static/images/nav-explore.png" mode="aspectFill"></image>
@@ -24,20 +24,15 @@
 		
 		<!-- AI助手组件 -->
 		<ai-assistant></ai-assistant>
-		
-		<!-- 自定义TabBar组件 -->
-		<tab-bar :current="1"></tab-bar>
 	</view>
 </template>
 
 <script>
 	import AiAssistant from '@/components/AiAssistant.vue';
-	import TabBar from '@/components/TabBar.vue';
 	
 	export default {
 		components: {
-			AiAssistant,
-			TabBar
+			AiAssistant
 		},
 		data() {
 			return {
@@ -52,9 +47,8 @@
 
 <style>
 	.container {
-		background-color: var(--bg-paper);
+		background-color: #F8F7F2;
 		min-height: 100vh;
-		background-image: url('/static/decoration/paper-texture.png');
 	}
 	
 	/* 自定义中国风导航栏 */
@@ -88,7 +82,7 @@
 		font-family: "FangSong", serif;
 		font-size: 40rpx;
 		font-weight: bold;
-		color: var(--text-brown);
+		color: #333;
 		text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
 	}
 	
@@ -108,7 +102,7 @@
 		background: #fff;
 		border-radius: 30rpx;
 		padding: 0 20rpx;
-		border: 1rpx solid var(--light-cream);
+		border: 1rpx solid #e0c9d1;
 	}
 	
 	.search-icon {

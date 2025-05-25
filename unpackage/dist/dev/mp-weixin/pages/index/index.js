@@ -172,16 +172,10 @@ var CustomNavBar = function CustomNavBar() {
     return resolve(__webpack_require__(/*! @/components/CustomNavBar.vue */ 113));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
-var TabBar = function TabBar() {
-  __webpack_require__.e(/*! require.ensure | components/TabBar */ "components/TabBar").then((function () {
-    return resolve(__webpack_require__(/*! @/components/TabBar.vue */ 131));
-  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
-};
 var _default = {
   components: {
     AiAssistant: AiAssistant,
-    CustomNavBar: CustomNavBar,
-    TabBar: TabBar
+    CustomNavBar: CustomNavBar
   },
   data: function data() {
     return {

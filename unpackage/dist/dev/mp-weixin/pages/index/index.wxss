@@ -1,6 +1,6 @@
 
 .container {
-	background-color: var(--bg-paper); /* 使用全局变量 */
+	background-color: #F8F7F2; /* Light cream background */
 	min-height: 100vh;
 	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfuX4GdMyAb2ZgU01PJnsgACoALwANAAoA);
 	background-repeat: repeat;
@@ -17,7 +17,7 @@
 	background: #fff;
 	border-radius: 30rpx;
 	padding: 0 20rpx;
-	border: 1rpx solid var(--light-cream);
+	border: 1rpx solid #e0c9d1;
 	/* 添加卷轴样式边框 */
 	box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfxn65fgZ0zIBvZmBTTU8meyAAKgAvAA0ACgA=);

@@ -102,28 +102,6 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var l1 = _vm.__map(_vm.postList, function (post, index) {
-    var $orig = _vm.__get_orig(post)
-    var g0 = post.images && post.images.length
-    var l0 = g0 ? post.images.slice(0, 3) : null
-    var g1 = g0 ? post.images.length : null
-    var g2 = g0 && g1 > 3 ? post.images.length : null
-    return {
-      $orig: $orig,
-      g0: g0,
-      l0: l0,
-      g1: g1,
-      g2: g2,
-    }
-  })
-  _vm.$mp.data = Object.assign(
-    {},
-    {
-      $root: {
-        l1: l1,
-      },
-    }
-  )
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -157,7 +135,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
+
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -168,127 +146,16 @@ var AiAssistant = function AiAssistant() {
     return resolve(__webpack_require__(/*! @/components/AiAssistant.vue */ 106));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
-var TabBar = function TabBar() {
-  __webpack_require__.e(/*! require.ensure | components/TabBar */ "components/TabBar").then((function () {
-    return resolve(__webpack_require__(/*! @/components/TabBar.vue */ 131));
-  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
-};
 var _default = {
   components: {
-    AiAssistant: AiAssistant,
-    TabBar: TabBar
+    AiAssistant: AiAssistant
   },
   data: function data() {
-    return {
-      currentCategory: 0,
-      loading: false,
-      categories: [{
-        name: '全部',
-        id: 'all'
-      }, {
-        name: '热门',
-        id: 'hot'
-      }, {
-        name: '美食',
-        id: 'food'
-      }, {
-        name: '学习',
-        id: 'study'
-      }, {
-        name: '活动',
-        id: 'event'
-      }, {
-        name: '交友',
-        id: 'social'
-      }, {
-        name: '二手',
-        id: 'secondhand'
-      }],
-      postList: [{
-        id: 1,
-        username: '陈同学',
-        avatar: '/static/images/avatars/user1.png',
-        badge: '学霸',
-        time: '10分钟前',
-        title: '图书馆自习的最佳位置推荐',
-        content: '经过一个学期的探索，我发现了图书馆里几个最适合自习的位置，采光好、安静、有插座，分享给大家...',
-        category: '学习',
-        views: 253,
-        comments: 12,
-        likes: 45,
-        images: ['/static/images/posts/library1.png', '/static/images/posts/library2.png']
-      }, {
-        id: 2,
-        username: '李同学',
-        avatar: '/static/images/avatars/user2.png',
-        badge: '美食达人',
-        time: '1小时前',
-        title: '校门口新开的川菜馆试吃报告',
-        content: '昨天和朋友一起去校门口新开的川菜馆试吃，点了水煮鱼、麻婆豆腐和宫保鸡丁，性价比很高，味道正宗！推荐大家去尝尝...',
-        category: '美食',
-        views: 568,
-        comments: 32,
-        likes: 97,
-        images: ['/static/images/posts/food1.png', '/static/images/posts/food2.png', '/static/images/posts/food3.png', '/static/images/posts/food4.png']
-      }, {
-        id: 3,
-        username: '王同学',
-        avatar: '/static/images/avatars/user3.png',
-        time: '2小时前',
-        title: '周末有人一起组队参加校园马拉松吗？',
-        content: '下周六有校园马拉松活动，有没有同学一起组队参加？我已经报名了，希望找几个志同道合的伙伴一起训练一下...',
-        category: '活动',
-        views: 321,
-        comments: 28,
-        likes: 54,
-        images: []
-      }]
-    };
+    return {};
   },
-  methods: {
-    selectCategory: function selectCategory(index) {
-      this.currentCategory = index;
-      // 这里可以根据分类加载不同的帖子
-      // TODO: 加载对应分类的帖子
-      uni.showToast({
-        title: '切换到' + this.categories[index].name,
-        icon: 'none'
-      });
-    },
-    viewPostDetail: function viewPostDetail(id) {
-      uni.navigateTo({
-        url: "/pages/forum/detail?id=".concat(id)
-      });
-    },
-    goToCreatePost: function goToCreatePost() {
-      uni.navigateTo({
-        url: '/pages/forum/create'
-      });
-    },
-    loadMorePosts: function loadMorePosts() {
-      var _this = this;
-      // 加载更多帖子的逻辑
-      this.loading = true;
-      setTimeout(function () {
-        // 模拟加载数据
-        _this.loading = false;
-        // 此处可以添加更多的帖子数据
-      }, 1500);
-    },
-    onPullDownRefresh: function onPullDownRefresh() {
-      // 下拉刷新
-      setTimeout(function () {
-        uni.stopPullDownRefresh();
-      }, 1500);
-    },
-    onReachBottom: function onReachBottom() {
-      // 上拉加载更多
-      this.loadMorePosts();
-    }
-  }
+  methods: {}
 };
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 
