@@ -9660,6 +9660,193 @@ function normalizeComponent (
 
 /***/ }),
 /* 33 */
+/*!*****************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/config/index.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+/**
+ * 全局配置文件
+ */
+
+// API请求基础路径
+var BaseUrl = 'http://172.20.10.3:8079';
+
+// 固定的认证令牌
+var FIXED_TOKEN = 'eyJhbGciOiJIUzM4NCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTc0ODUyMzQ3OX0.cAVl0m4KnJFWRkV-Z9qylW03H_VJqyhzYIByHROtliLpfPk4QQg0FZ8_GcOMUFiP';
+
+// 获取存储的token
+var getToken = function getToken() {
+  // 使用固定的token，而不是从存储获取
+  return FIXED_TOKEN;
+};
+
+// 导出配置
+var _default = {
+  BaseUrl: BaseUrl,
+  // 可以在这里添加其他全局配置项
+  timeout: 10000,
+  // 请求超时时间（毫秒）
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  // 获取认证头
+  getAuthHeader: function getAuthHeader() {
+    var token = getToken();
+    return token ? {
+      'Authorization': 'Bearer ' + token
+    } : {};
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 34 */
+/*!******************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/utils/request.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _config = _interopRequireDefault(__webpack_require__(/*! @/config */ 33));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  // GET请求
+  get: function get(url) {
+    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return new Promise(function (resolve, reject) {
+      // 合并认证头
+      var authHeader = _config.default.getAuthHeader();
+      var header = _objectSpread(_objectSpread(_objectSpread({}, _config.default.headers), authHeader), options.header);
+      uni.request(_objectSpread(_objectSpread({
+        url: _config.default.BaseUrl + url,
+        data: data,
+        method: 'GET',
+        header: header,
+        timeout: _config.default.timeout
+      }, options), {}, {
+        success: function success(res) {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(res.data);
+          } else {
+            reject(res);
+          }
+        },
+        fail: function fail(err) {
+          reject(err);
+        }
+      }));
+    });
+  },
+  // POST请求
+  post: function post(url) {
+    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return new Promise(function (resolve, reject) {
+      // 合并认证头
+      var authHeader = _config.default.getAuthHeader();
+      var header = _objectSpread(_objectSpread(_objectSpread({}, _config.default.headers), authHeader), options.header);
+      uni.request(_objectSpread(_objectSpread({
+        url: _config.default.BaseUrl + url,
+        data: data,
+        method: 'POST',
+        header: header,
+        timeout: _config.default.timeout
+      }, options), {}, {
+        success: function success(res) {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(res.data);
+          } else {
+            reject(res);
+          }
+        },
+        fail: function fail(err) {
+          reject(err);
+        }
+      }));
+    });
+  },
+  // PUT请求
+  put: function put(url) {
+    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return new Promise(function (resolve, reject) {
+      // 合并认证头
+      var authHeader = _config.default.getAuthHeader();
+      var header = _objectSpread(_objectSpread(_objectSpread({}, _config.default.headers), authHeader), options.header);
+      uni.request(_objectSpread(_objectSpread({
+        url: _config.default.BaseUrl + url,
+        data: data,
+        method: 'PUT',
+        header: header,
+        timeout: _config.default.timeout
+      }, options), {}, {
+        success: function success(res) {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(res.data);
+          } else {
+            reject(res);
+          }
+        },
+        fail: function fail(err) {
+          reject(err);
+        }
+      }));
+    });
+  },
+  // DELETE请求
+  delete: function _delete(url) {
+    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return new Promise(function (resolve, reject) {
+      // 合并认证头
+      var authHeader = _config.default.getAuthHeader();
+      var header = _objectSpread(_objectSpread(_objectSpread({}, _config.default.headers), authHeader), options.header);
+      uni.request(_objectSpread(_objectSpread({
+        url: _config.default.BaseUrl + url,
+        data: data,
+        method: 'DELETE',
+        header: header,
+        timeout: _config.default.timeout
+      }, options), {}, {
+        success: function success(res) {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(res.data);
+          } else {
+            reject(res);
+          }
+        },
+        fail: function fail(err) {
+          reject(err);
+        }
+      }));
+    });
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 35 */
 /*!**************************************************************!*\
   !*** C:/Users/ykh/Desktop/MyApp-wx/uni.promisify.adaptor.js ***!
   \**************************************************************/
@@ -9682,70 +9869,7 @@ uni.addInterceptor({
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */,
-/* 95 */,
-/* 96 */,
-/* 97 */
+/* 36 */
 /*!****************************************************!*\
   !*** C:/Users/ykh/Desktop/MyApp-wx/store/index.js ***!
   \****************************************************/
@@ -9761,8 +9885,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 98));
-var _user = _interopRequireDefault(__webpack_require__(/*! ./modules/user */ 99));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 37));
+var _user = _interopRequireDefault(__webpack_require__(/*! ./modules/user */ 38));
 _vue.default.use(_vuex.default);
 
 // Import modules
@@ -9861,7 +9985,7 @@ var _default = new _vuex.default.Store({
 exports.default = _default;
 
 /***/ }),
-/* 98 */
+/* 37 */
 /*!**************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vuex3/dist/vuex.common.js ***!
   \**************************************************************************************/
@@ -11117,7 +11241,7 @@ module.exports = index_cjs;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 3)))
 
 /***/ }),
-/* 99 */
+/* 38 */
 /*!***********************************************************!*\
   !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/user.js ***!
   \***********************************************************/
@@ -11132,8 +11256,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 100));
-var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 102));
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
 // User module
 var _default = {
   namespaced: true,
@@ -11238,7 +11362,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 100 */
+/* 39 */
 /*!************************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator/index.js ***!
   \************************************************************************************************/
@@ -11247,11 +11371,11 @@ exports.default = _default;
 
 // TODO(Babel 8): Remove this file.
 
-var runtime = __webpack_require__(/*! @babel/runtime/helpers/regeneratorRuntime */ 101)();
+var runtime = __webpack_require__(/*! @babel/runtime/helpers/regeneratorRuntime */ 40)();
 module.exports = runtime;
 
 /***/ }),
-/* 101 */
+/* 40 */
 /*!*******************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/regeneratorRuntime.js ***!
   \*******************************************************************/
@@ -11572,7 +11696,7 @@ function _regeneratorRuntime() {
 module.exports = _regeneratorRuntime, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 102 */
+/* 41 */
 /*!*****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/asyncToGenerator.js ***!
   \*****************************************************************/

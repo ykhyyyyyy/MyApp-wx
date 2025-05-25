@@ -6,9 +6,12 @@
 		<!-- Sidebar for chat history (hidden by default) -->
 		<view class="chat-sidebar" :class="{ 'sidebar-open': showSidebar }">
 			<view class="sidebar-header">
-				<text class="sidebar-title">会话历史</text>
+				<text class="sidebar-title">
+					<image src="/static/icons/chat-history.png" class="sidebar-title-icon"></image>
+					会话历史
+				</text>
 				<view class="sidebar-close" @click="toggleSidebar">
-					<text class="close-icon">×</text>
+					<image src="/static/icons/close.png" class="close-icon"></image>
 				</view>
 			</view>
 			
@@ -34,15 +37,18 @@
 					:class="{ 'active-session': currentSession && currentSession.id === session.id }"
 				>
 					<view class="history-title-row">
+						<image src="/static/icons/session.png" class="history-item-icon"></image>
 						<text class="history-title">会话 {{ index + 1 }}</text>
 					</view>
 					<view class="history-date-row">
+						<image src="/static/icons/calendar.png" class="history-date-icon"></image>
 						<text class="history-date">{{ formatDate(session.createdAt) }}</text>
 					</view>
 				</view>
 			</view>
 			
 			<view class="new-chat" @click="startNewChat">
+				<image src="/static/icons/new-chat.png" class="new-chat-icon"></image>
 				<text class="new-chat-text">新建会话</text>
 			</view>
 		</view>
@@ -56,7 +62,7 @@
 						<image src="/static/icons/history.png" class="history-icon"></image>
 						<text class="history-text">历史记录</text>
 					</view>
-			</view>
+				</view>
 			
 			<view class="chat-container">
 					<!-- Removed chat header with history button -->
@@ -70,7 +76,7 @@
 						enable-flex="true"
 					>
 						<view class="messages-wrapper">
-							<!-- 使用本地消息列表渲染消息 -->
+							<!-- 只渲染本地消息列表 -->
 							<view class="message-container" 
 								v-for="(message, index) in localMessageList" 
 								:key="'msg-' + index" 
@@ -89,43 +95,8 @@
 									</view>
 								</view>
 							</view>
-							
-							<!-- 完整响应显示：仅当有内容且不在流式输出中时显示 -->
-							<view v-if="completedResponse && !isStreaming" class="message-container ai-container">
-					<view class="message ai">
-						<image src="/static/avatars/ai-avatar.png" class="message-avatar"></image>
-						<view class="message-content">
-										<text class="message-text">{{ completedResponse }}</text>
-									</view>
 						</view>
-					</view>
-					
-							<!-- 流式显示：只在流式输出过程中显示 -->
-							<view v-if="isStreaming && streamingContent" class="message-container ai-container">
-								<view class="message ai">
-									<image src="/static/avatars/ai-avatar.png" class="message-avatar"></image>
-						<view class="message-content">
-										<text class="message-text">{{ streamingContent }}</text>
-										<view class="cursor"></view>
-									</view>
-						</view>
-					</view>
-					
-							<!-- Loading indicator while waiting for response -->
-							<view v-if="isLoading && !isStreaming" class="message-container ai-container">
-					<view class="message ai">
-						<image src="/static/avatars/ai-avatar.png" class="message-avatar"></image>
-						<view class="message-content">
-										<view class="loading-dots">
-											<view class="dot"></view>
-											<view class="dot"></view>
-											<view class="dot"></view>
-										</view>
-									</view>
-								</view>
-							</view>
-					</view>
-				</scroll-view>
+					</scroll-view>
 				
 				<view class="chat-input-area">
 						<input 
@@ -134,13 +105,16 @@
 							placeholder="请输入您的问题..." 
 							v-model="userInput"
 							@confirm="sendMessage"
-							:disabled="isStreaming || isLoading"
+							:disabled="isLoading"
 						/>
 						<button 
 							class="send-btn" 
 							@click="sendMessage" 
-							:disabled="isStreaming || isLoading || !userInput.trim()"
-						>发送</button>
+							:disabled="isLoading || !userInput.trim()"
+						>
+							<image src="/static/icons/send.png" class="send-icon" v-if="!isLoading"></image>
+							<image src="/static/icons/loading.png" class="loading-icon" v-else></image>
+						</button>
 					</view>
 				</view>
 			</view>
@@ -160,7 +134,7 @@ export default {
 	},
 	data() {
 		// 生成一个初始会话ID
-		const initialChatId = 'initial-' + Date.now();
+		const initialChatId =Date.now();
 		
 		return {
 			messages: [], // 清空默认消息，由localMessageList替代
@@ -172,9 +146,7 @@ export default {
 			],
 			userInput: '',
 			isLoading: false,
-			isStreaming: false,
-			streamingContent: '', // 仅用于流式显示过程
-			completedResponse: '', // 新增：存储完整的最终响应
+			currentStreamingIndex: -1, // 当前正在流式更新的消息索引
 			streamingChunks: [],
 			scrollTop: 0,
 			userId: 1, // 默认用户ID，实际中应从登录状态获取
@@ -202,23 +174,22 @@ export default {
 		// 发送消息到API (流式响应)
 		sendMessage() {
 			// 验证输入不为空
-			if (!this.userInput.trim() || this.isStreaming || this.isLoading) return;
+			if (!this.userInput.trim() || this.isLoading) return;
 			
 			// 存储当前输入
 			const userQuestion = this.userInput.trim();
 			
 			// 添加用户消息到本地消息列表
-			const userMessage = {
+			this.localMessageList.push({
 				role: 'user',
 				content: userQuestion
-			};
-			this.localMessageList.push(userMessage);
+			});
 			
 			// 清空输入框并显示加载状态
 			this.userInput = '';
 			this.isLoading = true;
 			
-			// 保存用户消息到本地存储
+			// 保存消息到本地存储
 			this.saveMessagesToStorage();
 			
 			// 滚动到底部
@@ -231,66 +202,31 @@ export default {
 				chatId: this.chatId
 			};
 			
-			// 设置流式传输结束监听器
-			this.setupStreamEndDetection();
-			
 			// 发送流式请求
-			this.streamChatRequest(chatData, userQuestion);
+			this.sendStreamRequest(chatData);
 		},
 		
-		// 设置流式传输结束监听
-		setupStreamEndDetection() {
-			// 清除可能存在的定时器
-			if (this.streamEndTimer) {
-				clearTimeout(this.streamEndTimer);
-			}
-			
-			// 创建检查函数
-			const checkStreamEnd = () => {
-				// 清除定时器
-				this.streamEndTimer = null;
-				
-				// 如果仍在流式状态，但流内容长度超过3秒未变化，判定为结束
-				if (this.isStreaming && this.lastStreamLength === this.streamingContent.length) {
-					console.log('[AI Chat] 检测到流式传输结束（内容长度未变化）');
-					this.handleStreamEnd();
-				} 
-				// 如果流还在继续
-				else if (this.isStreaming) {
-					// 更新最后内容长度
-					this.lastStreamLength = this.streamingContent.length;
-					// 继续检查
-					this.streamEndTimer = setTimeout(checkStreamEnd, 3000);
-				}
-			};
-			
-			// 初始化最后内容长度
-			this.lastStreamLength = 0;
-			
-			// 启动检查
-			this.streamEndTimer = setTimeout(checkStreamEnd, 3000);
-		},
-		
-		// 流式请求处理
-		streamChatRequest(chatData, userQuestion) {
-			// 获取配置和请求URL
+		// 发送流式请求
+		sendStreamRequest(chatData) {
+			// 获取配置
 			const config = this.$config;
 			const url = config.BaseUrl + '/api/ai/stream/chat';
-			
-			// 获取认证头
 			const authHeader = config.getAuthHeader();
 			
-			// 设置请求状态
-			this.isLoading = true;
-			this.isStreaming = false;
+			console.log('[AI Chat] 发送流式请求:', url);
 			
-			// 清空所有内容
-			this.streamingContent = '';
-			this.completedResponse = '';
+			// 重置流式数据
 			this.streamingChunks = [];
 			
-			console.log('[AI Chat] 开始发送请求:', url);
-
+			// 创建一个AI回复，初始显示"思考中..."
+			this.localMessageList.push({
+				role: 'ai',
+				content: '思考中...'
+			});
+			
+			// 记录当前正在流式更新的消息索引
+			this.currentStreamingIndex = this.localMessageList.length - 1;
+			
 			// 使用uni.request发送请求
 			const requestTask = uni.request({
 				url: url,
@@ -303,134 +239,270 @@ export default {
 				responseType: 'text',
 				enableChunked: true,
 				success: (res) => {
-					if (res.data) {
-						console.log('[AI Chat] 请求成功，接收到完整响应');
-						// 处理完整响应
-						this.handleCompleteResponse(res.data);
-					} else {
-						console.log('[AI Chat] 请求成功，但没有完整响应，可能通过chunk接收');
-						// 如果没有收到数据且没有任何流内容，可能API未返回
-						if (!this.streamingContent) {
-							setTimeout(() => {
-								if (!this.streamingContent && !this.completedResponse) {
-									this.isLoading = false;
-									this.isStreaming = false;
-									this.completedResponse = '抱歉，AI没有返回任何内容，请重试。';
-									this.addCompletedResponseToMessages();
-								}
-							}, 3000); // 等待3秒，给流式响应一个机会
-						}
+					// 检查是否已收到了分块数据
+					const hasStreamContent = this.streamingChunks.length > 0;
+					
+					// 只有在没有收到分块数据时才处理完整响应
+					if (res.data && !hasStreamContent) {
+						console.log('[AI Chat] 接收到完整响应，未收到分块数据');
+						this.finalizeAIResponse(res.data);
+					} else if (!hasStreamContent) {
+						console.log('[AI Chat] 没有收到任何数据');
+						this.updateStreamMessage('抱歉，未能获取回复，请重试。', true);
 					}
 				},
 				fail: (err) => {
 					console.error('[AI Chat] 请求失败:', err);
-					this.isStreaming = false;
+					// 更新AI消息为错误信息
+					this.updateStreamMessage('网络请求失败，请检查网络连接后重试。', true);
+					this.currentStreamingIndex = -1;
 					this.isLoading = false;
-					this.completedResponse = '网络请求失败，请检查网络连接后重试。';
-					this.addCompletedResponseToMessages();
-				},
-				complete: () => {
-					console.log('[AI Chat] 请求完成');
 				}
 			});
 			
-			// 监听数据分块接收事件
+			// 监听分块数据接收
 			if (requestTask && requestTask.onChunkReceived) {
 				requestTask.onChunkReceived((response) => {
 					try {
-						// 首次收到数据时，启动流式状态
-						if (!this.isStreaming) {
-							this.isStreaming = true;
-							this.isLoading = false;
-							console.log('[AI Chat] 开始接收流式数据');
-						}
-						
 						// 处理数据块
 						let chunk = '';
 						if (typeof response.data === 'string') {
 							chunk = response.data;
 						} else if (response.data instanceof ArrayBuffer) {
-							const decoder = new TextDecoder('utf-8');
-							chunk = decoder.decode(response.data);
+							// 特殊处理ArrayBuffer，确保微信小程序环境兼容性
+							try {
+								// 方法1：直接使用Uint8Array手动解码UTF-8
+								const bytes = new Uint8Array(response.data);
+								
+								// UTF-8解码函数
+								function utf8ArrayToString(array) {
+									let out = '';
+									let i = 0;
+									const len = array.length;
+									
+									while (i < len) {
+										// 处理单字节字符 (ASCII 0 - 127)
+										if (array[i] < 0x80) {
+											out += String.fromCharCode(array[i]);
+											i++;
+										// 处理双字节字符
+										} else if ((array[i] > 0xBF) && (array[i] < 0xE0)) {
+											if (i + 1 >= len) break;
+											const char = ((array[i] & 0x1F) << 6) | (array[i+1] & 0x3F);
+											out += String.fromCharCode(char);
+											i += 2;
+										// 处理三字节字符 (大多数中文字符)
+										} else if ((array[i] > 0xDF) && (array[i] < 0xF0)) {
+											if (i + 2 >= len) break;
+											const char = ((array[i] & 0x0F) << 12) |
+														((array[i+1] & 0x3F) << 6) |
+														(array[i+2] & 0x3F);
+											out += String.fromCharCode(char);
+											i += 3;
+										// 处理四字节字符 (表情符号等)
+										} else {
+											if (i + 3 >= len) break;
+											// 这里简化处理，可能不完全支持四字节字符
+											i += 4;
+										}
+									}
+									return out;
+								}
+								
+								chunk = utf8ArrayToString(bytes);
+								
+								if (!chunk || chunk.length < 2) {
+									console.warn('[AI Chat] ArrayBuffer解码结果过短');
+								}
+							} catch (e) {
+								console.error('[AI Chat] 处理ArrayBuffer错误:', e);
+								chunk = '';
+							}
 						}
 						
 						if (chunk) {
-							this.handleStreamChunk(chunk);
+							this.processStreamChunk(chunk);
 						}
 					} catch (error) {
 						console.error('[AI Chat] 处理数据块错误:', error);
 					}
 				});
 			} else {
-				// 不支持流式，使用标准请求
-				console.warn('[AI Chat] 平台不支持流式数据，使用标准请求');
+				// 不支持分块接收，使用普通请求
+				console.warn('[AI Chat] 不支持流式接收，使用普通请求');
 				
-				this.$api.post('/api/ai/stream/chat', chatData)
-					.then(response => {
-						console.log('[AI Chat] 标准请求成功');
-						this.handleCompleteResponse(response);
-					})
-					.catch(error => {
-						console.error('[AI Chat] 标准请求失败:', error);
-						this.isStreaming = false;
+				uni.request({
+					url: url,
+					data: chatData,
+					method: 'POST',
+					header: {
+						'Content-Type': 'application/json',
+						...authHeader
+					},
+					success: (res) => {
+						if (res.data) {
+							this.finalizeAIResponse(res.data);
+						} else {
+							this.updateStreamMessage('服务器返回了空响应', true);
+						}
+					},
+					fail: (err) => {
+						console.error('[AI Chat] 普通请求失败:', err);
+						this.updateStreamMessage('网络请求失败，请检查网络连接', true);
+					},
+					complete: () => {
+						this.currentStreamingIndex = -1;
 						this.isLoading = false;
-						this.completedResponse = '网络请求失败，请检查网络连接后重试。';
-						this.addCompletedResponseToMessages();
-					});
+					}
+				});
 			}
+			
+			// 设置流式传输超时检测
+			this.setupStreamTimeoutCheck();
 		},
 		
-		// 处理流数据块
-		handleStreamChunk(chunk) {
-			if (chunk) {
-				// 添加数据块，更新流式内容
-				this.streamingChunks.push(chunk);
-				this.streamingContent = this.streamingChunks.join('');
-				
-				if (this.streamingChunks.length % 5 === 0) {
-					console.log('[AI Chat] 已接收数据块:', this.streamingChunks.length);
+		// 处理流式数据块
+		processStreamChunk(chunk) {
+			if (!chunk) return;
+			
+			// 添加数据块
+			this.streamingChunks.push(chunk);
+			
+			// 收到第一个数据块时，清除"思考中..."
+			if (this.streamingChunks.length === 1) {
+				this.updateStreamMessage('');
+			}
+			
+			// 更新消息内容
+			const fullContent = this.streamingChunks.join('');
+			this.updateStreamMessage(fullContent);
+			
+			// 重置超时检测
+			this.resetStreamTimeoutCheck();
+		},
+		
+		// 更新流式消息内容
+		updateStreamMessage(content, isFinal = false) {
+			// 验证索引是否有效
+			if (this.currentStreamingIndex < 0 || 
+				this.currentStreamingIndex >= this.localMessageList.length) {
+				console.error('[AI Chat] 无效的流式消息索引:', this.currentStreamingIndex);
+				return;
+			}
+			
+			// 更新消息内容
+			this.$set(this.localMessageList[this.currentStreamingIndex], 'content', content);
+			
+			// 如果是最终内容，保存到本地存储
+			if (isFinal) {
+				this.saveMessagesToStorage();
+			}
+			
+			// 滚动到底部
+			this.scrollToBottom();
+		},
+		
+		// 设置流式传输超时检测
+		setupStreamTimeoutCheck() {
+			// 清除现有定时器
+			if (this.streamEndTimer) {
+				clearTimeout(this.streamEndTimer);
+			}
+			
+			// 初始化最后内容长度
+			this.lastStreamLength = 0;
+			
+			// 创建检查函数
+			const checkStreamEnd = () => {
+				// 如果当前有流式消息
+				if (this.currentStreamingIndex >= 0) {
+					const currentLength = this.streamingChunks.join('').length;
+					
+					// 检查是否停止变化
+					if (currentLength > 0 && currentLength === this.lastStreamLength) {
+						// 3秒没有新内容，流式传输结束
+						console.log('[AI Chat] 检测到流式传输结束');
+						this.finalizeStreamResponse();
+						return;
+					}
+					
+					// 更新最后内容长度
+					this.lastStreamLength = currentLength;
+					
+					// 继续检查
+					this.streamEndTimer = setTimeout(checkStreamEnd, 3000);
 				}
-				
-				// 滚动到底部
-				this.scrollToBottom();
-			}
+			};
+			
+			// 启动检查
+			this.streamEndTimer = setTimeout(checkStreamEnd, 3000);
 		},
 		
-		// 流式传输完成（所有数据块接收完毕）
-		handleStreamEnd() {
-			console.log('[AI Chat] 流式传输完成');
-			
-			// 状态重置
-			this.isStreaming = false;
-			
-			// 将最终的流式内容保存到完整响应
-			if (this.streamingContent) {
-				this.completedResponse = this.streamingContent;
+		// 重置流式传输超时检测
+		resetStreamTimeoutCheck() {
+			if (this.streamEndTimer) {
+				clearTimeout(this.streamEndTimer);
 			}
 			
-			// 清空流式内容
-			this.streamingContent = '';
+			// 更新最后内容长度
+			this.lastStreamLength = this.streamingChunks.join('').length;
 			
-			// 添加完整响应到消息列表
-			this.addCompletedResponseToMessages();
+			// 创建检查函数
+			const checkStreamEnd = () => {
+				// 如果当前有流式消息
+				if (this.currentStreamingIndex >= 0) {
+					const currentLength = this.streamingChunks.join('').length;
+					
+					// 检查是否停止变化
+					if (currentLength === this.lastStreamLength) {
+						// 3秒没有新内容，流式传输结束
+						console.log('[AI Chat] 检测到流式传输结束');
+						this.finalizeStreamResponse();
+						return;
+					}
+					
+					// 更新最后内容长度
+					this.lastStreamLength = currentLength;
+					
+					// 继续检查
+					this.streamEndTimer = setTimeout(checkStreamEnd, 3000);
+				}
+			};
 			
-			// 确保正常显示
-			this.$nextTick(() => {
-				this.scrollToBottom();
-			});
+			// 启动检查
+			this.streamEndTimer = setTimeout(checkStreamEnd, 3000);
 		},
 		
-		// 处理完整响应（非流式或API直接返回）
-		handleCompleteResponse(responseData) {
-			console.log('[AI Chat] 处理完整响应');
+		// 完成流式响应
+		finalizeStreamResponse() {
+			// 如果没有流式消息索引，直接返回
+			if (this.currentStreamingIndex < 0) {
+				return;
+			}
 			
-			// 状态重置
-			this.isStreaming = false;
+			// 获取最终内容
+			const finalContent = this.streamingChunks.join('');
+			
+			// 更新为最终内容
+			this.updateStreamMessage(finalContent, true);
+			
+			// 重置状态
+			this.currentStreamingIndex = -1;
+			this.streamingChunks = [];
 			this.isLoading = false;
 			
-			// 解析响应
+			// 清除定时器
+			if (this.streamEndTimer) {
+				clearTimeout(this.streamEndTimer);
+				this.streamEndTimer = null;
+			}
+		},
+		
+		// 处理完整响应
+		finalizeAIResponse(responseData) {
 			let content = '';
 			
+			// 解析响应
 			if (typeof responseData === 'string') {
 				content = responseData;
 			} else {
@@ -442,38 +514,19 @@ export default {
 				}
 			}
 			
-			// 设置完整响应
-			this.completedResponse = content;
+			// 更新消息内容
+			this.updateStreamMessage(content, true);
 			
-			// 添加到消息列表
-			this.addCompletedResponseToMessages();
+			// 重置状态
+			this.currentStreamingIndex = -1;
+			this.streamingChunks = [];
+			this.isLoading = false;
 			
-			// 确保正常显示
-			this.$nextTick(() => {
-				this.scrollToBottom();
-			});
-		},
-		
-		// 将完整响应添加到消息列表
-		addCompletedResponseToMessages() {
-			if (!this.completedResponse) {
-				console.warn('[AI Chat] 没有完整响应可添加');
-				return;
+			// 清除定时器
+			if (this.streamEndTimer) {
+				clearTimeout(this.streamEndTimer);
+				this.streamEndTimer = null;
 			}
-			
-			console.log('[AI Chat] 添加完整响应到消息列表，长度:', this.completedResponse.length);
-			
-			// 添加到消息列表
-			this.localMessageList.push({
-				role: 'ai',
-				content: this.completedResponse
-			});
-			
-			// 保存消息
-			this.saveMessagesToStorage();
-			
-			// 重置完整响应，因为已经添加到消息列表了
-			this.completedResponse = '';
 		},
 		
 		// 滚动聊天区域到底部
@@ -810,6 +863,7 @@ export default {
 			this.isLoading = false;
 			this.streamingContent = '';
 			this.streamingChunks = [];
+			this.completedResponse = ''; // 清空completedResponse以避免重复显示
 		}
 	},
 	mounted() {
@@ -1089,8 +1143,8 @@ export default {
 }
 
 .close-icon {
-	font-size: 40rpx;
-	color: #666;
+	width: 40rpx;
+	height: 40rpx;
 }
 
 .chat-history-list {
@@ -1239,5 +1293,62 @@ export default {
 	.chat-messages {
 		height: calc(75vh - 140rpx);
 	}
+}
+
+.send-icon {
+	width: 40rpx;
+	height: 40rpx;
+}
+
+.loading-icon {
+	width: 40rpx;
+	height: 40rpx;
+	animation: rotating 2s linear infinite;
+}
+
+@keyframes rotating {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.sidebar-title-icon {
+	width: 40rpx;
+	height: 40rpx;
+	margin-right: 10rpx;
+	vertical-align: middle;
+}
+
+.new-chat-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 10rpx;
+	vertical-align: middle;
+}
+
+.history-item-icon {
+	width: 28rpx;
+	height: 28rpx;
+	margin-right: 8rpx;
+	vertical-align: middle;
+}
+
+.history-date-icon {
+	width: 24rpx;
+	height: 24rpx;
+	margin-right: 6rpx;
+	opacity: 0.6;
+	vertical-align: middle;
+}
+
+.message-bubble-icon {
+	width: 36rpx;
+	height: 36rpx;
+	margin-right: 6rpx;
+	vertical-align: middle;
+	opacity: 0.7;
 }
 </style> 

@@ -37,7 +37,7 @@
 			
 			<view class="form-item">
 				<text class="form-label">快递公司</text>
-				<picker class="form-input" value="0" range-key="name" range="{{expressCompanies}}">
+				<picker class="form-input" value="0" range-key="name" :range="expressCompanies">
 					<view class="picker-text">请选择快递公司</view>
 				</picker>
 			</view>
