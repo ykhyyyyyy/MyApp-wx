@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container page-content-with-tabbar">
 		<!-- Use the custom navigation bar component with back button disabled -->
 		<custom-nav-bar title="校园益友" subtitle="Campus Friend" :show-back="false"></custom-nav-bar>
 
@@ -84,8 +84,6 @@
 			</view>
 		</view>
 		
-		
-		
 		<!-- 页脚装饰元素 -->
 		<view class="footer-decoration">
 			<image src="/static/decoration/footer-pattern.png" mode="aspectFit" class="footer-image"></image>
@@ -93,18 +91,23 @@
 		
 		<!-- AI助手组件 -->
 		<ai-assistant></ai-assistant>
+		
+		<!-- 自定义TabBar组件 -->
+		<tab-bar :current="0"></tab-bar>
 	</view>
 </template>
 
 <script>
 import AiAssistant from '@/components/AiAssistant.vue';
 import CustomNavBar from '@/components/CustomNavBar.vue';
+import TabBar from '@/components/TabBar.vue';
 import { mapState } from 'vuex';
 
 export default {
 	components: {
 		AiAssistant,
-		CustomNavBar
+		CustomNavBar,
+		TabBar
 	},
 	data() {
 		return {
@@ -149,7 +152,7 @@ export default {
 
 <style>
 	.container {
-		background-color: #F8F7F2; /* Light cream background */
+		background-color: var(--bg-paper); /* 使用全局变量 */
 		min-height: 100vh;
 		background-image: url('/static/decoration/paper-texture.png');
 		background-repeat: repeat;
@@ -169,7 +172,7 @@ export default {
 		background: #fff;
 		border-radius: 30rpx;
 		padding: 0 20rpx;
-		border: 1rpx solid #e0c9d1;
+		border: 1rpx solid var(--light-cream);
 		/* 添加卷轴样式边框 */
 		box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 		background-image: url('/static/decoration/paper-subtle.png');

@@ -1,7 +1,8 @@
 
 .container {
-	background-color: #F8F7F2;
+	background-color: var(--bg-paper);
 	min-height: 100vh;
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfuX4GdMyAb2ZgU01PJnsgACoALwANAAoA);
 }
 
 /* 自定义中国风导航栏 */
@@ -32,7 +33,7 @@
 	font-family: "FangSong", serif;
 	font-size: 40rpx;
 	font-weight: bold;
-	color: #333;
+	color: var(--text-brown);
 	text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
 }
 .nav-subtitle {
@@ -49,7 +50,7 @@
 	background: #fff;
 	border-radius: 30rpx;
 	padding: 0 20rpx;
-	border: 1rpx solid #e0c9d1;
+	border: 1rpx solid var(--light-cream);
 }
 .search-icon {
 	width: 32rpx;

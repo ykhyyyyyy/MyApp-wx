@@ -2,7 +2,7 @@
 .container {
 	background-color: #F8F3E6;
 	height: 100vh; /* Fixed height instead of min-height */
-	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSBzdWJ0bGUgcGFwZXIgdGV4dHVyZSBwYXR0ZXJuIHN1aXRhYmxlIGZvciB0aGUgYXBwbGljYXRpb24gYmFja2dyb3VuZC5dIA==);
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfuX4GdMyAb2ZgU01PJnsgACoALwANAAoA);
 	position: relative;
 	overflow: hidden; /* Prevent overall page scrolling */
 	display: flex;

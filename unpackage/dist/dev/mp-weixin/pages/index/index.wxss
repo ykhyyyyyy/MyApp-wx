@@ -1,8 +1,8 @@
 
 .container {
-	background-color: #F8F7F2; /* Light cream background */
+	background-color: var(--bg-paper); /* 使用全局变量 */
 	min-height: 100vh;
-	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSBzdWJ0bGUgcGFwZXIgdGV4dHVyZSBwYXR0ZXJuIHN1aXRhYmxlIGZvciB0aGUgYXBwbGljYXRpb24gYmFja2dyb3VuZC5dIA==);
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfuX4GdMyAb2ZgU01PJnsgACoALwANAAoA);
 	background-repeat: repeat;
 }
 .header {
@@ -17,10 +17,10 @@
 	background: #fff;
 	border-radius: 30rpx;
 	padding: 0 20rpx;
-	border: 1rpx solid #e0c9d1;
+	border: 1rpx solid var(--light-cream);
 	/* 添加卷轴样式边框 */
 	box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
-	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSB2ZXJ5IHN1YnRsZSBwYXBlciB0ZXh0dXJlIGZvciBzZWFyY2ggaW5wdXQgYmFja2dyb3VuZHMgYW5kIG90aGVyIGVsZW1lbnRzLl0g);
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfxn65fgZ0zIBvZmBTTU8meyAAKgAvAA0ACgA=);
 }
 
 /* Banner styling with scroll decoration */
@@ -153,7 +153,7 @@
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 	border-left: 6rpx solid #E0C9D1; /* Secondary color */
 	position: relative;
-	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSB2ZXJ5IHN1YnRsZSBwYXBlciB0ZXh0dXJlIGZvciBzZWFyY2ggaW5wdXQgYmFja2dyb3VuZHMgYW5kIG90aGVyIGVsZW1lbnRzLl0g);
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfxn65fgZ0zIBvZmBTTU8meyAAKgAvAA0ACgA=);
 	background-repeat: repeat;
 }
 .post-item::after {
@@ -163,7 +163,7 @@
 	bottom: 20rpx;
 	width: 60rpx;
 	height: 60rpx;
-	background-image: url(data:image/png;base64,W1RoaXMgaXMgYSBiaW5hcnkgaW1hZ2UgZmlsZS4gSW4gYSByZWFsIGltcGxlbWVudGF0aW9uLCB0aGlzIHdvdWxkIGJlIGEgUE5HIGltYWdlIHdpdGggYSB0cmFkaXRpb25hbCBDaGluZXNlIGNvcm5lciBkZWNvcmF0aW9uIHBhdHRlcm4uXSA=);
+	background-image: url(data:image/png;base64,//4vACoAIABIZ0V4V+dBdHRUsDBlk6xwDeVXk7FyhX3Xfj8AKgAvAA0ACgA=);
 	background-size: contain;
 	background-repeat: no-repeat;
 	opacity: 0.15;

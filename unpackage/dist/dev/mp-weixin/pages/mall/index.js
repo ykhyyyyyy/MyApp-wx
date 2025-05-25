@@ -135,7 +135,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -146,16 +146,119 @@ var AiAssistant = function AiAssistant() {
     return resolve(__webpack_require__(/*! @/components/AiAssistant.vue */ 106));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
+var TabBar = function TabBar() {
+  __webpack_require__.e(/*! require.ensure | components/TabBar */ "components/TabBar").then((function () {
+    return resolve(__webpack_require__(/*! @/components/TabBar.vue */ 131));
+  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+};
 var _default = {
   components: {
-    AiAssistant: AiAssistant
+    AiAssistant: AiAssistant,
+    TabBar: TabBar
   },
   data: function data() {
-    return {};
+    return {
+      banners: [{
+        image: '/static/images/mall-banner1.png'
+      }, {
+        image: '/static/images/mall-banner2.png'
+      }],
+      categories: [{
+        id: 'food',
+        name: '美食',
+        icon: '/static/icons/cat-food.png'
+      }, {
+        id: 'books',
+        name: '书籍',
+        icon: '/static/icons/cat-book.png'
+      }, {
+        id: 'clothing',
+        name: '服饰',
+        icon: '/static/icons/cat-clothing.png'
+      }, {
+        id: 'digital',
+        name: '数码',
+        icon: '/static/icons/cat-digital.png'
+      }],
+      promoProducts: [{
+        id: 1,
+        name: '定制校园文化T恤',
+        price: '49.9',
+        originalPrice: '89.9',
+        discount: '5.5折',
+        image: '/static/images/products/tshirt.png'
+      }, {
+        id: 2,
+        name: '学生专享笔记本电脑',
+        price: '4299',
+        originalPrice: '5299',
+        discount: '8.1折',
+        image: '/static/images/products/laptop.png'
+      }, {
+        id: 3,
+        name: '考研辅导书套装',
+        price: '128',
+        originalPrice: '198',
+        discount: '6.5折',
+        image: '/static/images/products/books.png'
+      }],
+      products: [{
+        id: 101,
+        name: '校园风格手帐本',
+        price: '29.9',
+        shop: '文具小铺',
+        sales: 432,
+        image: '/static/images/products/notebook.png'
+      }, {
+        id: 102,
+        name: '无线蓝牙耳机',
+        price: '129',
+        shop: '数码之家',
+        sales: 1253,
+        image: '/static/images/products/earphones.png'
+      }, {
+        id: 103,
+        name: '校园主题保温杯',
+        price: '59.9',
+        shop: '生活良品',
+        sales: 876,
+        image: '/static/images/products/cup.png'
+      }, {
+        id: 104,
+        name: '复古风书签套装',
+        price: '19.9',
+        shop: '文具小铺',
+        sales: 325,
+        image: '/static/images/products/bookmark.png'
+      }]
+    };
   },
-  methods: {}
+  methods: {
+    selectCategory: function selectCategory(id) {
+      uni.showToast({
+        title: '选择了' + id + '分类',
+        icon: 'none'
+      });
+    },
+    viewProduct: function viewProduct(id) {
+      uni.navigateTo({
+        url: "/pages/mall/product?id=".concat(id)
+      });
+    },
+    viewMorePromo: function viewMorePromo() {
+      uni.navigateTo({
+        url: '/pages/mall/promo'
+      });
+    },
+    viewMoreProducts: function viewMoreProducts() {
+      uni.navigateTo({
+        url: '/pages/mall/list'
+      });
+    }
+  }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

@@ -2,6 +2,7 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "ai-assistant": "/components/AiAssistant",
-    "custom-nav-bar": "/components/CustomNavBar"
+    "custom-nav-bar": "/components/CustomNavBar",
+    "tab-bar": "/components/TabBar"
   }
 }
