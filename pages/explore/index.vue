@@ -13,7 +13,7 @@
 			<view class="search-box">
 				<view class="search-input-wrapper">
 					<image src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" class="search-icon"></image>
-					<input class="search-input" type="text" placeholder="搜索店铺或美食" />
+					<input class="search-input" type="text" placeholder="搜索店铺或美食" v-model="searchText" @confirm="searchShops" />
 				</view>
 			</view>
 		</view>
@@ -21,23 +21,14 @@
 		<!-- 分类标签 -->
 		<view class="categories">
 			<scroll-view scroll-x class="categories-scroll" show-scrollbar="false">
-				<view class="category-item active">
-					<text>全部</text>
-				</view>
-				<view class="category-item">
-					<text>美食</text>
-				</view>
-				<view class="category-item">
-					<text>咖啡</text>
-				</view>
-				<view class="category-item">
-					<text>甜品</text>
-				</view>
-				<view class="category-item">
-					<text>文创</text>
-				</view>
-				<view class="category-item">
-					<text>书店</text>
+				<view 
+					v-for="(category, index) in categories" 
+					:key="index"
+					class="category-item" 
+					:class="{ active: selectedCategory === category }"
+					@click="selectCategory(category)"
+				>
+					<text>{{category}}</text>
 				</view>
 			</scroll-view>
 		</view>
@@ -69,41 +60,80 @@
 			</view>
 		</view>
 		
-		<!-- 店铺列表 -->
+		<!-- 探店列表 -->
 		<view class="section">
 			<view class="section-header">
 				<image class="section-title-decoration" src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" mode="aspectFit"></image>
-				<text class="section-title">附近店铺</text>
+				<text class="section-title">探店评论</text>
 				<image class="section-title-decoration" src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" mode="aspectFit"></image>
 			</view>
 			
-			<view class="shop-list">
-				<view class="shop-card" v-for="(shop, index) in shops" :key="index" @click="viewShopDetail(shop.id)">
-					<image class="shop-image" :src="shop.image" mode="aspectFill"></image>
-					<view class="shop-info">
-						<view class="shop-header-row">
-							<text class="shop-name">{{shop.name}}</text>
-							<view class="shop-badges">
-								<text v-if="shop.isOfficial" class="shop-badge official">官方</text>
-								<text v-if="shop.isNew" class="shop-badge new">新店</text>
-							</view>
+			<!-- 显示加载中状态 -->
+			<view v-if="loading && reviews.length === 0" class="loading-container">
+				<view class="loading-spinner"></view>
+				<text class="loading-text">加载中...</text>
+			</view>
+			
+			<!-- 显示无数据状态 -->
+			<view v-else-if="reviews.length === 0" class="empty-container">
+				<text class="empty-text">暂无探店数据</text>
+			</view>
+			
+			<!-- 探店列表 -->
+			<view v-else class="review-list">
+				<view class="review-card" v-for="(review, index) in reviews" :key="review.id || index" @click="viewReviewDetail(review.id)">
+					<view class="review-header">
+						<view class="review-user">
+							<image :src="review.userAvatar || 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/userAvatar/default-avatar.png'" class="review-avatar"></image>
+							<text class="review-username">{{review.username || '匿名用户'}}</text>
 						</view>
-						<view class="shop-rating-row">
-							<text class="rating-score">{{shop.rating}}</text>
-							<view class="rating-stars">
-								<text v-for="n in 5" :key="n" class="star" :class="{ active: n <= Math.floor(shop.rating) }">★</text>
-							</view>
-							<text class="rating-count">{{shop.ratingCount}}条评价</text>
-						</view>
-						<view class="shop-tags">
-							<text class="shop-tag" v-for="(tag, tagIndex) in shop.tags" :key="tagIndex">{{tag}}</text>
-						</view>
-						<view class="shop-location">
-							<image class="location-icon" src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg"></image>
-							<text class="location-text">{{shop.location}}</text>
-							<text class="distance">{{shop.distance}}</text>
+						<text class="review-time">{{review.createTime ? new Date(review.createTime).toLocaleString() : '未知时间'}}</text>
+					</view>
+					
+					<text class="review-shop-name">{{review.shopName || '未知店铺'}}</text>
+					<text class="review-title">{{review.title || '无标题'}}</text>
+					<text class="review-content">{{review.content || '无内容'}}</text>
+					
+					<view class="review-images" v-if="review.images">
+						<image 
+							v-for="(img, imgIndex) in review.images.split(',')" 
+							:key="imgIndex" 
+							:src="img" 
+							mode="aspectFill" 
+							class="review-image"
+						></image>
+					</view>
+					
+					<view class="review-rating">
+						<text class="rating-score">{{review.rating || 0}}</text>
+						<view class="rating-stars">
+							<text v-for="n in 5" :key="n" class="star" :class="{ active: n <= Math.floor(review.rating || 0) }">★</text>
 						</view>
 					</view>
+					
+					<view class="review-footer">
+						<view class="review-action">
+							<image src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" class="icon-action"></image>
+							<text>{{review.views || 0}} 浏览</text>
+						</view>
+						<view class="review-action">
+							<image src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" class="icon-action"></image>
+							<text>{{review.comments || 0}} 评论</text>
+						</view>
+						<view class="review-action">
+							<image src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" class="icon-action"></image>
+							<text>{{review.likes || 0}} 点赞</text>
+						</view>
+					</view>
+				</view>
+				
+				<!-- 加载更多 -->
+				<view v-if="hasMore" class="load-more" @click="loadMore">
+					<text v-if="!loading">加载更多</text>
+					<view v-else class="loading-spinner small"></view>
+				</view>
+				<view v-else class="no-more">
+					<text>没有更多内容了</text>
 				</view>
 			</view>
 		</view>
@@ -116,6 +146,7 @@
 <script>
 	import AiAssistant from '@/components/AiAssistant.vue';
 	import CustomNavBar from '@/components/CustomNavBar.vue';
+	import config from '@/config/index.js';
 	
 	export default {
 		components: {
@@ -124,6 +155,15 @@
 		},
 		data() {
 			return {
+				loading: false,
+				currentPage: 1,
+				pageSize: 10,
+				totalItems: 0,
+				reviews: [],
+				selectedCategory: '全部',
+				categories: ['全部', '美食', '咖啡', '甜品', '文创', '书店'],
+				searchText: '',
+				// 仅作为初始化的数据，实际会从API加载
 				featuredShops: [
 					{
 						id: '1',
@@ -147,64 +187,116 @@
 						description: '中式素食餐厅，环境雅致，菜品精美，适合小聚'
 					}
 				],
-				shops: [
-					{
-						id: '4',
-						name: '江南小厨',
-						image: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						rating: 4.5,
-						ratingCount: 328,
-						isOfficial: true,
-						isNew: false,
-						tags: ['江浙菜', '家常菜', '性价比高'],
-						location: '校园东门50米',
-						distance: '350m'
-					},
-					{
-						id: '5',
-						name: '清风书院',
-						image: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						rating: 4.7,
-						ratingCount: 156,
-						isOfficial: false,
-						isNew: true,
-						tags: ['文艺', '安静', '咖啡'],
-						location: '图书馆西侧',
-						distance: '120m'
-					},
-					{
-						id: '6',
-						name: '甜蜜时光',
-						image: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						rating: 4.4,
-						ratingCount: 287,
-						isOfficial: false,
-						isNew: false,
-						tags: ['甜品', '下午茶', '约会'],
-						location: '学生中心一楼',
-						distance: '80m'
-					},
-					{
-						id: '7',
-						name: '川味小馆',
-						image: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						rating: 4.6,
-						ratingCount: 412,
-						isOfficial: true,
-						isNew: false,
-						tags: ['川菜', '麻辣', '小吃'],
-						location: '校园南门对面',
-						distance: '450m'
-					}
-				]
+				shops: [] // 这会被API数据替换
 			}
 		},
+		computed: {
+			hasMore() {
+				return this.reviews.length < this.totalItems;
+			}
+		},
+		onLoad() {
+			// 页面加载时获取数据
+			this.loadShopReviews();
+		},
 		methods: {
+			// 加载探店评论数据
+			loadShopReviews(refresh = true) {
+				if (refresh) {
+					this.currentPage = 1;
+					this.reviews = [];
+				}
+				
+				this.loading = true;
+				
+				// 构建查询参数
+				const params = {
+					current: this.currentPage,
+					size: this.pageSize
+				};
+				
+				// 如果选择了特定分类且不是"全部"，添加筛选条件
+				if (this.selectedCategory !== '全部') {
+					params.category = this.selectedCategory;
+				}
+				
+				// 发起API请求
+				uni.request({
+					url: `${config.BaseUrl}/api/shop/review/page`,
+					method: 'GET',
+					data: params,
+					header: {
+						'content-type': 'application/json'
+					},
+					success: (res) => {
+						console.log('获取探店数据成功:', res.data);
+						if (res.data && res.data.code === 1) {
+							const data = res.data.data;
+							// 合并数据
+							if (refresh) {
+								this.reviews = data.records || [];
+							} else {
+								this.reviews = [...this.reviews, ...(data.records || [])];
+							}
+							this.totalItems = data.total;
+							this.currentPage = data.current;
+						} else {
+							uni.showToast({
+								title: '获取数据失败',
+								icon: 'none'
+							});
+						}
+					},
+					fail: (err) => {
+						console.error('请求失败:', err);
+						uni.showToast({
+							title: '网络请求失败',
+							icon: 'none'
+						});
+					},
+					complete: () => {
+						this.loading = false;
+						// 停止下拉刷新状态
+						uni.stopPullDownRefresh();
+					}
+				});
+			},
+			
+			// 加载更多数据
+			loadMore() {
+				if (!this.loading && this.hasMore) {
+					this.currentPage++;
+					this.loadShopReviews(false);
+				}
+			},
+			
+			// 搜索店铺
+			searchShops() {
+				// 使用搜索文本重新加载数据
+				this.loadShopReviews();
+			},
+			
+			// 切换分类
+			selectCategory(category) {
+				this.selectedCategory = category;
+				// 切换分类后重新加载数据
+				this.loadShopReviews();
+			},
+			
+			// 查看探店详情
 			viewShopDetail(id) {
 				uni.navigateTo({
 					url: `/pages/shops/detail/index?id=${id}`
 				});
 			},
+			
+			// 查看探店评论详情
+			viewReviewDetail(id) {
+				uni.navigateTo({
+					url: `/pages/explore/detail/index?id=${id}`
+				});
+			},
+			
 			goBack() {
 				uni.navigateBack({
 					delta: 1,
@@ -215,6 +307,16 @@
 						});
 					}
 				});
+			},
+			
+			// 下拉刷新
+			onPullDownRefresh() {
+				this.loadShopReviews();
+			},
+			
+			// 上拉加载更多
+			onReachBottom() {
+				this.loadMore();
 			}
 		}
 	}
@@ -410,6 +512,165 @@
 		font-size: 24rpx;
 		color: #666;
 		line-height: 1.5;
+	}
+	
+	/* 探店列表样式 */
+	.review-list {
+		margin-top: 20rpx;
+	}
+	
+	.review-card {
+		background-color: #fff;
+		border-radius: 10rpx;
+		padding: 20rpx;
+		margin-bottom: 20rpx;
+		box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
+		border: 1rpx solid #f0f0f0;
+	}
+	
+	.review-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 15rpx;
+	}
+	
+	.review-user {
+		display: flex;
+		align-items: center;
+	}
+	
+	.review-avatar {
+		width: 60rpx;
+		height: 60rpx;
+		border-radius: 30rpx;
+		margin-right: 10rpx;
+	}
+	
+	.review-username {
+		font-size: 28rpx;
+		font-weight: bold;
+		color: #333;
+	}
+	
+	.review-time {
+		font-size: 24rpx;
+		color: #999;
+	}
+	
+	.review-shop-name {
+		font-size: 28rpx;
+		color: #7EC4CF;
+		margin-bottom: 10rpx;
+		display: block;
+	}
+	
+	.review-title {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 10rpx;
+		display: block;
+	}
+	
+	.review-content {
+		font-size: 28rpx;
+		color: #666;
+		line-height: 1.6;
+		margin-bottom: 15rpx;
+		display: block;
+	}
+	
+	.review-images {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10rpx;
+		margin-bottom: 15rpx;
+	}
+	
+	.review-image {
+		width: 200rpx;
+		height: 200rpx;
+		border-radius: 8rpx;
+	}
+	
+	.review-rating {
+		display: flex;
+		align-items: center;
+		margin-bottom: 15rpx;
+	}
+	
+	.review-footer {
+		display: flex;
+		justify-content: space-between;
+		border-top: 1rpx solid #f0f0f0;
+		padding-top: 15rpx;
+	}
+	
+	.review-action {
+		display: flex;
+		align-items: center;
+	}
+	
+	.icon-action {
+		width: 28rpx;
+		height: 28rpx;
+		margin-right: 6rpx;
+	}
+	
+	/* 加载状态 */
+	.loading-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 40rpx 0;
+	}
+	
+	.loading-spinner {
+		width: 60rpx;
+		height: 60rpx;
+		border: 6rpx solid #f3f3f3;
+		border-top: 6rpx solid #7EC4CF;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin-bottom: 20rpx;
+	}
+	
+	.loading-spinner.small {
+		width: 40rpx;
+		height: 40rpx;
+		border-width: 4rpx;
+	}
+	
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+	
+	.loading-text {
+		font-size: 28rpx;
+		color: #999;
+	}
+	
+	.empty-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 60rpx 0;
+	}
+	
+	.empty-text {
+		font-size: 28rpx;
+		color: #999;
+	}
+	
+	.load-more, .no-more {
+		text-align: center;
+		padding: 20rpx 0;
+		font-size: 26rpx;
+		color: #999;
 	}
 	
 	.shop-list {

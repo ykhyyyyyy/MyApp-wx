@@ -1,0 +1,229 @@
+
+.container {
+	background-color: #F8F7F2;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 搜索框样式 */
+.header {
+	padding: 20rpx 30rpx;
+	background-color: #FFFFFF;
+}
+.search-box {
+	width: 100%;
+}
+.search-input-wrapper {
+	display: flex;
+	align-items: center;
+	background-color: #F5F5F5;
+	border-radius: 40rpx;
+	padding: 0 20rpx;
+	height: 70rpx;
+}
+.search-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 10rpx;
+}
+.search-input {
+	flex: 1;
+	height: 70rpx;
+	font-size: 28rpx;
+	background-color: transparent;
+	border: none;
+}
+
+/* 分类标签样式 */
+.category-tabs {
+	display: flex;
+	background-color: #FFFFFF;
+	padding: 0 30rpx;
+	border-bottom: 1rpx solid #EEEEEE;
+}
+.tab-item {
+	position: relative;
+	padding: 20rpx 0;
+	margin-right: 60rpx;
+	font-size: 28rpx;
+	color: #666666;
+}
+.tab-item.active {
+	color: #8A3324;
+	font-weight: bold;
+}
+.active-line {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 4rpx;
+	background-color: #8A3324;
+	border-radius: 2rpx;
+}
+
+/* 消息列表滚动区域 */
+.message-scroll {
+	flex: 1;
+	background-color: #F8F7F2;
+	padding: 20rpx 30rpx;
+}
+
+/* 标题样式 */
+.section-title-wrapper {
+	display: flex;
+	align-items: center;
+	margin: 20rpx 0 30rpx;
+}
+.section-title-line {
+	flex: 1;
+	height: 1rpx;
+	background-color: #DDDDDD;
+}
+.section-title {
+	padding: 0 20rpx;
+	font-size: 28rpx;
+	color: #999999;
+	font-family: "FangSong", serif;
+}
+
+/* 消息列表样式 */
+.messages-list {
+	display: flex;
+	flex-direction: column;
+}
+.message-item {
+	display: flex;
+	padding: 24rpx;
+	background-color: #FFFFFF;
+	margin-bottom: 20rpx;
+	border-radius: 16rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+.message-left {
+	margin-right: 20rpx;
+}
+.avatar-container {
+	position: relative;
+}
+.message-avatar {
+	width: 90rpx;
+	height: 90rpx;
+	border-radius: 12rpx;
+	border: 2rpx solid rgba(138, 51, 36, 0.1);
+}
+.unread-badge {
+	position: absolute;
+	top: -8rpx;
+	right: -8rpx;
+	min-width: 32rpx;
+	height: 32rpx;
+	border-radius: 16rpx;
+	background-color: #8A3324;
+	color: white;
+	font-size: 20rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 6rpx;
+}
+.message-right {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.message-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10rpx;
+}
+.message-name {
+	font-size: 30rpx;
+	color: #333333;
+	font-weight: bold;
+}
+.message-time {
+	font-size: 24rpx;
+	color: #999999;
+}
+.message-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.message-preview {
+	font-size: 26rpx;
+	color: #666666;
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.message-status {
+	font-size: 22rpx;
+	color: #7EC4CF;
+	background-color: rgba(126, 196, 207, 0.1);
+	padding: 4rpx 12rpx;
+	border-radius: 20rpx;
+	margin-left: 10rpx;
+}
+
+/* 空状态样式 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 100rpx 0;
+}
+.empty-image {
+	width: 160rpx;
+	height: 160rpx;
+	margin-bottom: 30rpx;
+	opacity: 0.5;
+}
+.empty-text {
+	font-size: 32rpx;
+	color: #8C7853;
+	font-weight: bold;
+	margin-bottom: 10rpx;
+}
+.empty-subtext {
+	font-size: 26rpx;
+	color: #999999;
+}
+
+/* 新消息按钮 */
+.new-message-btn {
+	position: fixed;
+	right: 40rpx;
+	bottom: 100rpx;
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #7EC4CF, #8A3324);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+}
+.new-message-icon {
+	width: 50rpx;
+	height: 50rpx;
+}
+
+/* 页脚装饰 */
+.footer-decoration {
+	padding: 30rpx 0;
+	display: flex;
+	justify-content: center;
+}
+.footer-image {
+	width: 300rpx;
+	height: 40rpx;
+	opacity: 0.6;
+}
+

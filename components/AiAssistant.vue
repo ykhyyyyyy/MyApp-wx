@@ -2,7 +2,7 @@
 	<view>
 		<!-- 悬浮AI助手按钮 -->
 		<view class="ai-floating-btn" @click="openAiDialog">
-			<image :src="'/static/icons/ai.png'" class="ai-icon"></image>
+			<image :src="'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/icons/ai.png'" class="ai-icon"></image>
 		</view>
 		
 		<!-- AI对话框 -->

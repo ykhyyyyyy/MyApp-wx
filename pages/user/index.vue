@@ -12,7 +12,7 @@
 		<!-- 用户信息卡片 -->
 		<view class="user-card">
 			<view class="user-info">
-				<image class="avatar" src="/static/avatars/default.png"></image>
+				<image class="avatar" src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/userAvatar/default-avatar.png"></image>
 				<view class="user-detail">
 					<text class="username">未登录</text>
 					<text class="login-tip">点击登录账号</text>

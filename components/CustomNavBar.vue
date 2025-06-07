@@ -49,7 +49,9 @@ export default {
 				'pages/explore/index',
 				'pages/forum/index', 
 				'pages/mall/index',
-				'pages/user/index'
+				'pages/user/index',
+				'pages/friends/index',
+				'pages/messages/index'
 			]
 		}
 	},

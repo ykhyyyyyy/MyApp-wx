@@ -1,0 +1,167 @@
+
+.container {
+	background-color: #F8F7F2; /* 淡奶油色背景 */
+	min-height: 100vh;
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfuX4GdMyAb2ZgU01PJnsgACoALwANAAoA);
+	background-repeat: repeat;
+}
+.header {
+	padding: 20rpx 30rpx;
+}
+.search-box {
+	width: 100%;
+}
+.search-input-wrapper {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	border-radius: 30rpx;
+	padding: 0 20rpx;
+	border: 1rpx solid #e0c9d1;
+	box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfxn65fgZ0zIBvZmBTTU8meyAAKgAvAA0ACgA=);
+}
+.search-icon {
+	width: 36rpx;
+	height: 36rpx;
+	margin-right: 10rpx;
+}
+.search-input {
+	flex: 1;
+	height: 70rpx;
+	font-size: 28rpx;
+	font-family: "FangSong", serif;
+}
+
+/* 好友列表部分 */
+.friends-section {
+	margin: 30rpx;
+	background-color: #FFFFFF;
+	border-radius: 20rpx;
+	padding: 30rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+	border: 1rpx solid rgba(224, 201, 209, 0.5); /* 浅色边框 */
+}
+.section-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 20rpx;
+	border-bottom: 2rpx solid #F0F0F0;
+	padding-bottom: 16rpx;
+	position: relative;
+}
+.section-title-decoration {
+	width: 24rpx;
+	height: 24rpx;
+	margin: 0 10rpx;
+}
+.section-title {
+	font-family: "Source Han Serif CN", "FangSong", serif;
+	font-size: 32rpx;
+	color: #333;
+	font-weight: bold;
+	position: relative;
+	letter-spacing: 4rpx;
+}
+.friends-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+.friend-item {
+	display: flex;
+	align-items: center;
+	padding: 20rpx;
+	background-image: url(data:image/png;base64,//4vACoAIAC4fiBfxn65fgZ0zIBvZmBTTU8meyAAKgAvAA0ACgA=);
+	border-radius: 16rpx;
+	box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+	border-left: 4rpx solid #7EC4CF; /* 主色调青色 */
+}
+.friend-avatar {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50rpx;
+	margin-right: 20rpx;
+	border: 2rpx solid rgba(126, 196, 207, 0.3);
+}
+.friend-info {
+	flex: 1;
+}
+.friend-name-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10rpx;
+}
+.friend-name {
+	font-size: 32rpx;
+	color: #333;
+	font-weight: bold;
+	font-family: "KaiTi", "FangSong";
+}
+.friend-status {
+	font-size: 24rpx;
+	color: #999;
+	background-color: #f0f0f0;
+	padding: 4rpx 12rpx;
+	border-radius: 20rpx;
+	font-family: "SimSun", serif;
+}
+.friend-status.online {
+	background-color: rgba(126, 196, 207, 0.2);
+	color: #7EC4CF;
+}
+.friend-signature {
+	font-size: 26rpx;
+	color: #666;
+	font-family: "SimSun", serif;
+}
+.friend-actions {
+	margin-left: 10rpx;
+}
+.btn-message {
+	background-color: #7EC4CF;
+	color: white;
+	font-size: 24rpx;
+	padding: 10rpx 20rpx;
+	border-radius: 30rpx;
+	line-height: 1;
+	font-family: "KaiTi", "FangSong";
+	border: none;
+}
+
+/* 添加好友按钮 - 更新样式 */
+.add-friend {
+	position: fixed;
+	right: 40rpx;
+	bottom: 120rpx;
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50%;
+	background-color: #8A3324;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 4rpx 10rpx rgba(138, 51, 36, 0.3);
+	z-index: 99;
+}
+.add-icon-text {
+	color: white;
+	font-size: 60rpx;
+	font-weight: bold;
+	line-height: 1;
+}
+
+/* 页脚装饰 */
+.footer-decoration {
+	margin-top: 60rpx;
+	padding-bottom: 30rpx;
+	display: flex;
+	justify-content: center;
+}
+.footer-image {
+	width: 400rpx;
+	height: 60rpx;
+}
+

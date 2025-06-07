@@ -13,14 +13,20 @@ export default {
     isAuthenticated: state => !!state.token,
     
     // Get user display name or default
-    displayName: state => state.userInfo ? state.userInfo.username : '游客'
+    displayName: state => state.userInfo ? state.userInfo.nickname || state.userInfo.username : '游客'
   },
   
   mutations: {
     // Set user info
-    SET_USER_INFO(state, userInfo) {
-      state.userInfo = userInfo;
-      state.isLoggedIn = !!userInfo;
+    SET_USER_INFO(state, data) {
+      // 如果data包含user对象，则使用user对象作为userInfo
+      if (data && data.user) {
+        state.userInfo = data.user;
+      } else {
+        // 否则直接使用data作为userInfo
+        state.userInfo = data;
+      }
+      state.isLoggedIn = !!state.userInfo;
     },
     
     // Set token

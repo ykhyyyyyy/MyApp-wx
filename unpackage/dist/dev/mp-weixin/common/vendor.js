@@ -9678,7 +9678,7 @@ exports.default = void 0;
  */
 
 // API请求基础路径
-var BaseUrl = 'http://172.20.10.3:8079';
+var BaseUrl = 'http://127.0.0.1:8079';
 
 // 固定的认证令牌
 var FIXED_TOKEN = 'eyJhbGciOiJIUzM4NCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTc0ODUyMzQ3OX0.cAVl0m4KnJFWRkV-Z9qylW03H_VJqyhzYIByHROtliLpfPk4QQg0FZ8_GcOMUFiP';
@@ -9887,60 +9887,64 @@ exports.default = void 0;
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
 var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 37));
 var _user = _interopRequireDefault(__webpack_require__(/*! ./modules/user */ 38));
+var _ai = _interopRequireDefault(__webpack_require__(/*! ./modules/ai */ 42));
+var _coupon = _interopRequireDefault(__webpack_require__(/*! ./modules/coupon */ 43));
+var _express = _interopRequireDefault(__webpack_require__(/*! ./modules/express */ 44));
+var _friend = _interopRequireDefault(__webpack_require__(/*! ./modules/friend */ 45));
+var _chat = _interopRequireDefault(__webpack_require__(/*! ./modules/chat */ 46));
+var _post = _interopRequireDefault(__webpack_require__(/*! ./modules/post */ 47));
+var _shopReview = _interopRequireDefault(__webpack_require__(/*! ./modules/shopReview */ 48));
+var _product = _interopRequireDefault(__webpack_require__(/*! ./modules/product */ 49));
+var _order = _interopRequireDefault(__webpack_require__(/*! ./modules/order */ 50));
 _vue.default.use(_vuex.default);
 
 // Import modules
-// import posts from './modules/posts'
 var _default = new _vuex.default.Store({
   state: {
     // Global state
     bannerList: [{
-      image: '/static/images/banner1.png'
-    }, {
-      image: '/static/images/banner2.png'
-    }, {
-      image: '/static/images/banner3.png'
+      image: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/banana/banana1.png'
     }],
     quickAccessList: [{
       name: '探店',
-      icon: '/static/icons/explore.png',
+      icon: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/icons/review.png',
       path: './explore/index'
     }, {
       name: '论坛',
-      icon: '/static/icons/forum.png',
+      icon: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/icons/post.png',
       path: './forum/index'
     }, {
       name: '商城',
-      icon: '/static/icons/shop.png',
+      icon: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/icons/shop.png',
       path: './mall/index'
     }, {
       name: '代取',
-      icon: '/static/icons/express.png',
+      icon: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/icons/run.png',
       path: './proxy/index'
     }, {
       name: 'AI助手',
-      icon: '/static/icons/ai.png',
+      icon: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/MyApp/icons/ai.png',
       path: './ai/index'
     }],
     postList: [{
       id: 1,
       username: '青竹书院11',
-      avatar: '/static/avatars/user1.png',
+      avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
       time: '10分钟前',
       title: '校内最值得打卡的五家美食店铺',
       content: '经过一个月的探店，终于整理出了校内最值得打卡的五家店铺，每一家都有其独特的风味...',
-      images: ['/static/posts/food1.png', '/static/posts/food2.png'],
+      images: ['https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg', 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg'],
       views: 128,
       comments: 32,
       likes: 64
     }, {
       id: 2,
       username: '墨客飘香',
-      avatar: '/static/avatars/user2.png',
+      avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
       time: '1小时前',
       title: '传统文化讲座回顾',
       content: '今天的传统文化讲座干货满满，特别是关于汉服的部分，分享一些笔记和现场照片...',
-      images: ['/static/posts/culture1.png'],
+      images: ['https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg'],
       views: 86,
       comments: 15,
       likes: 42
@@ -9978,8 +9982,16 @@ var _default = new _vuex.default.Store({
   },
   modules: {
     // Add your modules here
-    user: _user.default
-    // posts
+    user: _user.default,
+    ai: _ai.default,
+    coupon: _coupon.default,
+    express: _express.default,
+    friend: _friend.default,
+    chat: _chat.default,
+    post: _post.default,
+    shopReview: _shopReview.default,
+    product: _product.default,
+    order: _order.default
   }
 });
 exports.default = _default;
@@ -11273,14 +11285,20 @@ var _default = {
     },
     // Get user display name or default
     displayName: function displayName(state) {
-      return state.userInfo ? state.userInfo.username : '游客';
+      return state.userInfo ? state.userInfo.nickname || state.userInfo.username : '游客';
     }
   },
   mutations: {
     // Set user info
-    SET_USER_INFO: function SET_USER_INFO(state, userInfo) {
-      state.userInfo = userInfo;
-      state.isLoggedIn = !!userInfo;
+    SET_USER_INFO: function SET_USER_INFO(state, data) {
+      // 如果data包含user对象，则使用user对象作为userInfo
+      if (data && data.user) {
+        state.userInfo = data.user;
+      } else {
+        // 否则直接使用data作为userInfo
+        state.userInfo = data;
+      }
+      state.isLoggedIn = !!state.userInfo;
     },
     // Set token
     SET_TOKEN: function SET_TOKEN(state, token) {
@@ -11734,6 +11752,3414 @@ function _asyncToGenerator(fn) {
   };
 }
 module.exports = _asyncToGenerator, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+/* 42 */
+/*!*********************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/ai.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+// AI功能模块
+var _default = {
+  namespaced: true,
+  state: {
+    chatSessions: [],
+    // 用户的所有会话
+    currentSessionMessages: [],
+    // 当前会话的消息列表
+    isLoading: false
+  },
+  getters: {
+    // 获取所有会话
+    getAllSessions: function getAllSessions(state) {
+      return state.chatSessions;
+    },
+    // 获取当前会话消息
+    getCurrentMessages: function getCurrentMessages(state) {
+      return state.currentSessionMessages;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    }
+  },
+  mutations: {
+    // 设置会话列表
+    SET_CHAT_SESSIONS: function SET_CHAT_SESSIONS(state, sessions) {
+      state.chatSessions = sessions;
+    },
+    // 设置当前会话消息
+    SET_CURRENT_MESSAGES: function SET_CURRENT_MESSAGES(state, messages) {
+      state.currentSessionMessages = messages;
+    },
+    // 添加消息到当前会话
+    ADD_MESSAGE: function ADD_MESSAGE(state, message) {
+      state.currentSessionMessages.push(message);
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    }
+  },
+  actions: {
+    // 获取用户的所有会话
+    fetchChatHistory: function fetchChatHistory(_ref, userId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                commit('SET_LOADING', true);
+                _context.prev = 2;
+                _context.next = 5;
+                return _request.default.get("/api/ai/history?userId=".concat(userId));
+              case 5:
+                response = _context.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_CHAT_SESSIONS', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_CHAT_SESSIONS', response);
+                } else {
+                  console.error('Unexpected history response format:', response);
+                  commit('SET_CHAT_SESSIONS', []);
+                }
+                return _context.abrupt("return", response);
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](2);
+                console.error('Error fetching chat history:', _context.t0);
+                commit('SET_CHAT_SESSIONS', []);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 15:
+                _context.prev = 15;
+                commit('SET_LOADING', false);
+                return _context.finish(15);
+              case 18:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 获取会话内的聊天记录
+    fetchSessionMessages: function fetchSessionMessages(_ref2, chatSessionId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                commit('SET_LOADING', true);
+                _context2.prev = 2;
+                _context2.next = 5;
+                return _request.default.get("/api/ai/history/message?chatSessionId=".concat(chatSessionId));
+              case 5:
+                response = _context2.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_CURRENT_MESSAGES', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_CURRENT_MESSAGES', response);
+                } else {
+                  console.error('Unexpected messages response format:', response);
+                  commit('SET_CURRENT_MESSAGES', []);
+                }
+                return _context2.abrupt("return", response);
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
+                console.error('Error fetching session messages:', _context2.t0);
+                commit('SET_CURRENT_MESSAGES', []);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 15:
+                _context2.prev = 15;
+                commit('SET_LOADING', false);
+                return _context2.finish(15);
+              case 18:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 发送聊天消息（非流式）
+    sendChatMessage: function sendChatMessage(_ref3, _ref4) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, userId, input, chatId, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref3.commit;
+                userId = _ref4.userId, input = _ref4.input, chatId = _ref4.chatId;
+                _context3.prev = 2;
+                // 添加用户消息到本地
+                commit('ADD_MESSAGE', {
+                  role: 'USER',
+                  content: input
+                });
+
+                // 发送请求
+                _context3.next = 6;
+                return _request.default.post('/api/ai/chat', {
+                  userId: userId,
+                  input: input,
+                  chatId: chatId
+                });
+              case 6:
+                response = _context3.sent;
+                // 添加AI回复到本地
+                if (response && response.content) {
+                  commit('ADD_MESSAGE', {
+                    role: 'ASSISTANT',
+                    content: response.content
+                  });
+                }
+                return _context3.abrupt("return", response);
+              case 11:
+                _context3.prev = 11;
+                _context3.t0 = _context3["catch"](2);
+                console.error('Error sending chat message:', _context3.t0);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[2, 11]]);
+      }))();
+    },
+    // 智能商品推荐
+    getShopRecommendations: function getShopRecommendations(_ref5, _ref6) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, userId, products, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref5.commit;
+                userId = _ref6.userId, products = _ref6.products;
+                _context4.prev = 2;
+                _context4.next = 5;
+                return _request.default.post("/api/ai/openFeign/shopRecommend/".concat(userId), products);
+              case 5:
+                response = _context4.sent;
+                return _context4.abrupt("return", response);
+              case 9:
+                _context4.prev = 9;
+                _context4.t0 = _context4["catch"](2);
+                console.error('Error getting shop recommendations:', _context4.t0);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 13:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[2, 9]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 43 */
+/*!*************************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/coupon.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+// 优惠券功能模块
+var _default = {
+  namespaced: true,
+  state: {
+    coupons: [],
+    // 用户的优惠券列表
+    currentCoupon: null,
+    // 当前查看的优惠券
+    isLoading: false
+  },
+  getters: {
+    // 获取所有优惠券
+    getAllCoupons: function getAllCoupons(state) {
+      return state.coupons;
+    },
+    // 获取当前优惠券
+    getCurrentCoupon: function getCurrentCoupon(state) {
+      return state.currentCoupon;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    }
+  },
+  mutations: {
+    // 设置优惠券列表
+    SET_COUPONS: function SET_COUPONS(state, coupons) {
+      state.coupons = coupons;
+    },
+    // 设置当前优惠券
+    SET_CURRENT_COUPON: function SET_CURRENT_COUPON(state, coupon) {
+      state.currentCoupon = coupon;
+    },
+    // 添加优惠券
+    ADD_COUPON: function ADD_COUPON(state, coupon) {
+      state.coupons.push(coupon);
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    }
+  },
+  actions: {
+    // 秒杀优惠券
+    speedKillCoupon: function speedKillCoupon(_ref, _ref2) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, userId, couponId, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                userId = _ref2.userId, couponId = _ref2.couponId;
+                commit('SET_LOADING', true);
+                _context.prev = 3;
+                _context.next = 6;
+                return _request.default.post('/api/coupon/speedKill', {
+                  userId: userId,
+                  couponId: couponId
+                });
+              case 6:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  // 如果秒杀成功，添加到优惠券列表
+                  commit('ADD_COUPON', response.data);
+                }
+                return _context.abrupt("return", response);
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](3);
+                console.error('Error speed killing coupon:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 15:
+                _context.prev = 15;
+                commit('SET_LOADING', false);
+                return _context.finish(15);
+              case 18:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 获取优惠券详情
+    getCouponDetail: function getCouponDetail(_ref3, couponId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref3.commit;
+                commit('SET_LOADING', true);
+                _context2.prev = 2;
+                _context2.next = 5;
+                return _request.default.get("/api/coupon/".concat(couponId));
+              case 5:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_COUPON', response.data);
+                } else if (response && !response.code) {
+                  // 直接返回数据的情况
+                  commit('SET_CURRENT_COUPON', response);
+                }
+                return _context2.abrupt("return", response);
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
+                console.error('Error fetching coupon detail:', _context2.t0);
+                commit('SET_CURRENT_COUPON', null);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 15:
+                _context2.prev = 15;
+                commit('SET_LOADING', false);
+                return _context2.finish(15);
+              case 18:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 获取用户的所有优惠券
+    getUserCoupons: function getUserCoupons(_ref4, userId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref4.commit;
+                commit('SET_LOADING', true);
+                _context3.prev = 2;
+                _context3.next = 5;
+                return _request.default.get("/api/coupon/user/".concat(userId));
+              case 5:
+                response = _context3.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_COUPONS', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_COUPONS', response);
+                } else {
+                  console.error('Unexpected coupons response format:', response);
+                  commit('SET_COUPONS', []);
+                }
+                return _context3.abrupt("return", response);
+              case 10:
+                _context3.prev = 10;
+                _context3.t0 = _context3["catch"](2);
+                console.error('Error fetching user coupons:', _context3.t0);
+                commit('SET_COUPONS', []);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+                _context3.prev = 15;
+                commit('SET_LOADING', false);
+                return _context3.finish(15);
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[2, 10, 15, 18]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 44 */
+/*!**************************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/express.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    expressList: [],
+    // 快递订单列表
+    currentExpress: null,
+    // 当前查看的快递订单
+    isLoading: false,
+    pagination: {
+      current: 1,
+      size: 10,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取所有快递订单
+    getAllExpress: function getAllExpress(state) {
+      return state.expressList;
+    },
+    // 获取当前快递订单
+    getCurrentExpress: function getCurrentExpress(state) {
+      return state.currentExpress;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置快递订单列表
+    SET_EXPRESS_LIST: function SET_EXPRESS_LIST(state, list) {
+      state.expressList = list;
+    },
+    // 设置当前快递订单
+    SET_CURRENT_EXPRESS: function SET_CURRENT_EXPRESS(state, express) {
+      state.currentExpress = express;
+    },
+    // 添加快递订单
+    ADD_EXPRESS: function ADD_EXPRESS(state, express) {
+      state.expressList.unshift(express);
+    },
+    // 更新快递订单
+    UPDATE_EXPRESS: function UPDATE_EXPRESS(state, express) {
+      var index = state.expressList.findIndex(function (item) {
+        return item.id === express.id;
+      });
+      if (index !== -1) {
+        state.expressList.splice(index, 1, express);
+      }
+      if (state.currentExpress && state.currentExpress.id === express.id) {
+        state.currentExpress = express;
+      }
+    },
+    // 删除快递订单
+    DELETE_EXPRESS: function DELETE_EXPRESS(state, id) {
+      state.expressList = state.expressList.filter(function (item) {
+        return item.id !== id;
+      });
+      if (state.currentExpress && state.currentExpress.id === id) {
+        state.currentExpress = null;
+      }
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 创建快递订单
+    createExpress: function createExpress(_ref, expressData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                commit('SET_LOADING', true);
+                _context.prev = 2;
+                _context.next = 5;
+                return _request.default.post('/api/express', expressData);
+              case 5:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_EXPRESS', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_EXPRESS', response);
+                }
+                return _context.abrupt("return", response);
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](2);
+                console.error('Error creating express order:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 14:
+                _context.prev = 14;
+                commit('SET_LOADING', false);
+                return _context.finish(14);
+              case 17:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 获取快递订单详情
+    getExpressDetail: function getExpressDetail(_ref2, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                commit('SET_LOADING', true);
+                _context2.prev = 2;
+                _context2.next = 5;
+                return _request.default.get("/api/express/".concat(id));
+              case 5:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_EXPRESS', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_EXPRESS', response);
+                }
+                return _context2.abrupt("return", response);
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
+                console.error('Error fetching express detail:', _context2.t0);
+                commit('SET_CURRENT_EXPRESS', null);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 15:
+                _context2.prev = 15;
+                commit('SET_LOADING', false);
+                return _context2.finish(15);
+              case 18:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 更新快递订单信息
+    updateExpress: function updateExpress(_ref3, _ref4) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, id, data, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref3.commit;
+                id = _ref4.id, data = _ref4.data;
+                commit('SET_LOADING', true);
+                _context3.prev = 3;
+                _context3.next = 6;
+                return _request.default.put("/api/express/".concat(id), data);
+              case 6:
+                response = _context3.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('UPDATE_EXPRESS', response.data);
+                } else if (response && !response.code) {
+                  commit('UPDATE_EXPRESS', response);
+                }
+                return _context3.abrupt("return", response);
+              case 11:
+                _context3.prev = 11;
+                _context3.t0 = _context3["catch"](3);
+                console.error('Error updating express order:', _context3.t0);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+                _context3.prev = 15;
+                commit('SET_LOADING', false);
+                return _context3.finish(15);
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 删除快递订单
+    deleteExpress: function deleteExpress(_ref5, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref5.commit;
+                commit('SET_LOADING', true);
+                _context4.prev = 2;
+                _context4.next = 5;
+                return _request.default.delete("/api/express/".concat(id));
+              case 5:
+                response = _context4.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_EXPRESS', id);
+                }
+                return _context4.abrupt("return", response);
+              case 10:
+                _context4.prev = 10;
+                _context4.t0 = _context4["catch"](2);
+                console.error('Error deleting express order:', _context4.t0);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 14:
+                _context4.prev = 14;
+                commit('SET_LOADING', false);
+                return _context4.finish(14);
+              case 17:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 分页查询快递订单
+    getExpressPage: function getExpressPage(_ref6, _ref7) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, _ref7$current, current, _ref7$size, size, _ref7$userId, userId, url, response;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref6.commit;
+                _ref7$current = _ref7.current, current = _ref7$current === void 0 ? 1 : _ref7$current, _ref7$size = _ref7.size, size = _ref7$size === void 0 ? 10 : _ref7$size, _ref7$userId = _ref7.userId, userId = _ref7$userId === void 0 ? null : _ref7$userId;
+                commit('SET_LOADING', true);
+                _context5.prev = 3;
+                url = "/api/express/page?current=".concat(current, "&size=").concat(size);
+                if (userId) {
+                  url += "&userId=".concat(userId);
+                }
+                _context5.next = 8;
+                return _request.default.get(url);
+              case 8:
+                response = _context5.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_EXPRESS_LIST', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_EXPRESS_LIST', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected express page response format:', response);
+                  commit('SET_EXPRESS_LIST', []);
+                }
+                return _context5.abrupt("return", response);
+              case 13:
+                _context5.prev = 13;
+                _context5.t0 = _context5["catch"](3);
+                console.error('Error fetching express page:', _context5.t0);
+                commit('SET_EXPRESS_LIST', []);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 18:
+                _context5.prev = 18;
+                commit('SET_LOADING', false);
+                return _context5.finish(18);
+              case 21:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[3, 13, 18, 21]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 45 */
+/*!*************************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/friend.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    friendList: [],
+    // 好友列表
+    friendRequests: [],
+    // 好友申请列表
+    maybeKnowList: [],
+    // 可能认识的人列表
+    isLoading: false,
+    pagination: {
+      current: 1,
+      size: 10,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取好友列表
+    getFriendList: function getFriendList(state) {
+      return state.friendList;
+    },
+    // 获取好友申请列表
+    getFriendRequests: function getFriendRequests(state) {
+      return state.friendRequests;
+    },
+    // 获取可能认识的人列表
+    getMaybeKnowList: function getMaybeKnowList(state) {
+      return state.maybeKnowList;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置好友列表
+    SET_FRIEND_LIST: function SET_FRIEND_LIST(state, list) {
+      state.friendList = list;
+    },
+    // 设置好友申请列表
+    SET_FRIEND_REQUESTS: function SET_FRIEND_REQUESTS(state, list) {
+      state.friendRequests = list;
+    },
+    // 设置可能认识的人列表
+    SET_MAYBE_KNOW_LIST: function SET_MAYBE_KNOW_LIST(state, list) {
+      state.maybeKnowList = list;
+    },
+    // 添加好友
+    ADD_FRIEND: function ADD_FRIEND(state, friend) {
+      state.friendList.unshift(friend);
+    },
+    // 更新好友关系状态
+    UPDATE_FRIEND_STATUS: function UPDATE_FRIEND_STATUS(state, _ref) {
+      var id = _ref.id,
+        status = _ref.status;
+      // 更新好友列表中的状态
+      var friendIndex = state.friendList.findIndex(function (item) {
+        return item.id === id;
+      });
+      if (friendIndex !== -1) {
+        state.friendList[friendIndex].status = status;
+      }
+
+      // 更新好友申请列表中的状态
+      var requestIndex = state.friendRequests.findIndex(function (item) {
+        return item.id === id;
+      });
+      if (requestIndex !== -1) {
+        state.friendRequests[requestIndex].status = status;
+
+        // 如果已同意，从申请列表移除
+        if (status === 1) {
+          state.friendRequests.splice(requestIndex, 1);
+        }
+      }
+    },
+    // 删除好友
+    DELETE_FRIEND: function DELETE_FRIEND(state, id) {
+      state.friendList = state.friendList.filter(function (item) {
+        return item.id !== id;
+      });
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 添加好友关系
+    addFriend: function addFriend(_ref2, _ref3) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, userId, friendId, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref2.commit;
+                userId = _ref3.userId, friendId = _ref3.friendId;
+                commit('SET_LOADING', true);
+                _context.prev = 3;
+                _context.next = 6;
+                return _request.default.post('/api/friend/relation/add', {
+                  userId: userId,
+                  friendId: friendId
+                });
+              case 6:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_FRIEND', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_FRIEND', response);
+                }
+                return _context.abrupt("return", response);
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](3);
+                console.error('Error adding friend:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 15:
+                _context.prev = 15;
+                commit('SET_LOADING', false);
+                return _context.finish(15);
+              case 18:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 获取用户的好友列表
+    getFriendList: function getFriendList(_ref4, _ref5) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, userId, _ref5$status, status, _ref5$page, page, _ref5$pageSize, pageSize, url, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref4.commit;
+                userId = _ref5.userId, _ref5$status = _ref5.status, status = _ref5$status === void 0 ? null : _ref5$status, _ref5$page = _ref5.page, page = _ref5$page === void 0 ? 1 : _ref5$page, _ref5$pageSize = _ref5.pageSize, pageSize = _ref5$pageSize === void 0 ? 10 : _ref5$pageSize;
+                commit('SET_LOADING', true);
+                _context2.prev = 3;
+                url = "/api/friend/relation/list/".concat(userId, "?page=").concat(page, "&pageSize=").concat(pageSize);
+                if (status !== null) {
+                  url += "&status=".concat(status);
+                }
+                _context2.next = 8;
+                return _request.default.get(url);
+              case 8:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_FRIEND_LIST', response.data.records || response.data);
+                  if (response.data.current) {
+                    commit('SET_PAGINATION', {
+                      current: response.data.current,
+                      size: response.data.size,
+                      total: response.data.total
+                    });
+                  }
+                } else if (Array.isArray(response)) {
+                  commit('SET_FRIEND_LIST', response);
+                } else {
+                  console.error('Unexpected friend list response format:', response);
+                  commit('SET_FRIEND_LIST', []);
+                }
+                return _context2.abrupt("return", response);
+              case 13:
+                _context2.prev = 13;
+                _context2.t0 = _context2["catch"](3);
+                console.error('Error fetching friend list:', _context2.t0);
+                commit('SET_FRIEND_LIST', []);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 18:
+                _context2.prev = 18;
+                commit('SET_LOADING', false);
+                return _context2.finish(18);
+              case 21:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[3, 13, 18, 21]]);
+      }))();
+    },
+    // 获取好友申请列表
+    getFriendRequests: function getFriendRequests(_ref6, _ref7) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, userId, _ref7$page, page, _ref7$pageSize, pageSize, url, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref6.commit;
+                userId = _ref7.userId, _ref7$page = _ref7.page, page = _ref7$page === void 0 ? 1 : _ref7$page, _ref7$pageSize = _ref7.pageSize, pageSize = _ref7$pageSize === void 0 ? 10 : _ref7$pageSize;
+                commit('SET_LOADING', true);
+                _context3.prev = 3;
+                url = "/api/friend/relation/requests/".concat(userId, "?page=").concat(page, "&pageSize=").concat(pageSize);
+                _context3.next = 7;
+                return _request.default.get(url);
+              case 7:
+                response = _context3.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_FRIEND_REQUESTS', response.data.records || response.data);
+                  if (response.data.current) {
+                    commit('SET_PAGINATION', {
+                      current: response.data.current,
+                      size: response.data.size,
+                      total: response.data.total
+                    });
+                  }
+                } else if (Array.isArray(response)) {
+                  commit('SET_FRIEND_REQUESTS', response);
+                } else {
+                  console.error('Unexpected friend requests response format:', response);
+                  commit('SET_FRIEND_REQUESTS', []);
+                }
+                return _context3.abrupt("return", response);
+              case 12:
+                _context3.prev = 12;
+                _context3.t0 = _context3["catch"](3);
+                console.error('Error fetching friend requests:', _context3.t0);
+                commit('SET_FRIEND_REQUESTS', []);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 17:
+                _context3.prev = 17;
+                commit('SET_LOADING', false);
+                return _context3.finish(17);
+              case 20:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[3, 12, 17, 20]]);
+      }))();
+    },
+    // 更新好友关系状态
+    updateFriendStatus: function updateFriendStatus(_ref8, _ref9) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, id, status, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref8.commit;
+                id = _ref9.id, status = _ref9.status;
+                commit('SET_LOADING', true);
+                _context4.prev = 3;
+                _context4.next = 6;
+                return _request.default.put("/api/friend/relation/status/".concat(id), {
+                  status: status
+                });
+              case 6:
+                response = _context4.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('UPDATE_FRIEND_STATUS', {
+                    id: id,
+                    status: status
+                  });
+                }
+                return _context4.abrupt("return", response);
+              case 11:
+                _context4.prev = 11;
+                _context4.t0 = _context4["catch"](3);
+                console.error('Error updating friend status:', _context4.t0);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 15:
+                _context4.prev = 15;
+                commit('SET_LOADING', false);
+                return _context4.finish(15);
+              case 18:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 删除好友关系
+    deleteFriend: function deleteFriend(_ref10, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref10.commit;
+                commit('SET_LOADING', true);
+                _context5.prev = 2;
+                _context5.next = 5;
+                return _request.default.delete("/api/friend/relation/".concat(id));
+              case 5:
+                response = _context5.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_FRIEND', id);
+                }
+                return _context5.abrupt("return", response);
+              case 10:
+                _context5.prev = 10;
+                _context5.t0 = _context5["catch"](2);
+                console.error('Error deleting friend:', _context5.t0);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 14:
+                _context5.prev = 14;
+                commit('SET_LOADING', false);
+                return _context5.finish(14);
+              case 17:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 检查是否为好友关系
+    checkFriendRelation: function checkFriendRelation(_ref11, _ref12) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        var commit, userId, friendId, response;
+        return _regenerator.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                commit = _ref11.commit;
+                userId = _ref12.userId, friendId = _ref12.friendId;
+                _context6.prev = 2;
+                _context6.next = 5;
+                return _request.default.get("/api/friend/relation/check?userId=".concat(userId, "&friendId=").concat(friendId));
+              case 5:
+                response = _context6.sent;
+                return _context6.abrupt("return", response);
+              case 9:
+                _context6.prev = 9;
+                _context6.t0 = _context6["catch"](2);
+                console.error('Error checking friend relation:', _context6.t0);
+                return _context6.abrupt("return", Promise.reject(_context6.t0));
+              case 13:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[2, 9]]);
+      }))();
+    },
+    // 可能认识的人
+    getMaybeKnow: function getMaybeKnow(_ref13, userId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                commit = _ref13.commit;
+                commit('SET_LOADING', true);
+                _context7.prev = 2;
+                _context7.next = 5;
+                return _request.default.get("/api/friend/relation/maybeKnow?userId=".concat(userId));
+              case 5:
+                response = _context7.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_MAYBE_KNOW_LIST', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_MAYBE_KNOW_LIST', response);
+                } else {
+                  console.error('Unexpected maybe know response format:', response);
+                  commit('SET_MAYBE_KNOW_LIST', []);
+                }
+                return _context7.abrupt("return", response);
+              case 10:
+                _context7.prev = 10;
+                _context7.t0 = _context7["catch"](2);
+                console.error('Error fetching maybe know list:', _context7.t0);
+                commit('SET_MAYBE_KNOW_LIST', []);
+                return _context7.abrupt("return", Promise.reject(_context7.t0));
+              case 15:
+                _context7.prev = 15;
+                commit('SET_LOADING', false);
+                return _context7.finish(15);
+              case 18:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, null, [[2, 10, 15, 18]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 46 */
+/*!***********************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/chat.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    chatSessions: [],
+    // 聊天会话列表
+    currentSession: null,
+    // 当前聊天会话
+    chatMessages: [],
+    // 当前会话的消息列表
+    isLoading: false,
+    pagination: {
+      page: 1,
+      pageSize: 20,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取所有聊天会话
+    getAllSessions: function getAllSessions(state) {
+      return state.chatSessions;
+    },
+    // 获取当前会话
+    getCurrentSession: function getCurrentSession(state) {
+      return state.currentSession;
+    },
+    // 获取当前会话的消息列表
+    getChatMessages: function getChatMessages(state) {
+      return state.chatMessages;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置聊天会话列表
+    SET_CHAT_SESSIONS: function SET_CHAT_SESSIONS(state, sessions) {
+      state.chatSessions = sessions;
+    },
+    // 设置当前会话
+    SET_CURRENT_SESSION: function SET_CURRENT_SESSION(state, session) {
+      state.currentSession = session;
+    },
+    // 设置聊天消息列表
+    SET_CHAT_MESSAGES: function SET_CHAT_MESSAGES(state, messages) {
+      state.chatMessages = messages;
+    },
+    // 添加消息
+    ADD_MESSAGE: function ADD_MESSAGE(state, message) {
+      state.chatMessages.push(message);
+    },
+    // 添加或更新会话
+    ADD_OR_UPDATE_SESSION: function ADD_OR_UPDATE_SESSION(state, session) {
+      var index = state.chatSessions.findIndex(function (item) {
+        return item.id === session.id;
+      });
+      if (index !== -1) {
+        state.chatSessions.splice(index, 1, session);
+      } else {
+        state.chatSessions.unshift(session);
+      }
+    },
+    // 更新会话未读消息数
+    UPDATE_SESSION_UNREAD: function UPDATE_SESSION_UNREAD(state, _ref) {
+      var userId = _ref.userId,
+        friendId = _ref.friendId,
+        count = _ref.count;
+      var session = state.chatSessions.find(function (s) {
+        return s.userId === userId && s.friendId === friendId || s.userId === friendId && s.friendId === userId;
+      });
+      if (session) {
+        session.unreadCount = count;
+      }
+    },
+    // 删除会话
+    DELETE_SESSION: function DELETE_SESSION(state, id) {
+      state.chatSessions = state.chatSessions.filter(function (item) {
+        return item.id !== id;
+      });
+      if (state.currentSession && state.currentSession.id === id) {
+        state.currentSession = null;
+        state.chatMessages = [];
+      }
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 发送消息
+    sendMessage: function sendMessage(_ref2, messageData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref2.commit;
+                _context.prev = 1;
+                _context.next = 4;
+                return _request.default.post('/api/friend/chat/message/send', messageData);
+              case 4:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_MESSAGE', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_MESSAGE', response);
+                }
+                return _context.abrupt("return", response);
+              case 9:
+                _context.prev = 9;
+                _context.t0 = _context["catch"](1);
+                console.error('Error sending message:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 13:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[1, 9]]);
+      }))();
+    },
+    // 获取聊天记录
+    getChatMessages: function getChatMessages(_ref3, _ref4) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, senderId, receiverId, _ref4$page, page, _ref4$pageSize, pageSize, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref3.commit;
+                senderId = _ref4.senderId, receiverId = _ref4.receiverId, _ref4$page = _ref4.page, page = _ref4$page === void 0 ? 1 : _ref4$page, _ref4$pageSize = _ref4.pageSize, pageSize = _ref4$pageSize === void 0 ? 20 : _ref4$pageSize;
+                commit('SET_LOADING', true);
+                _context2.prev = 3;
+                _context2.next = 6;
+                return _request.default.get("/api/friend/chat/message/list?senderId=".concat(senderId, "&receiverId=").concat(receiverId, "&page=").concat(page, "&pageSize=").concat(pageSize));
+              case 6:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CHAT_MESSAGES', response.data.records || response.data);
+                  if (response.data.current) {
+                    commit('SET_PAGINATION', {
+                      page: response.data.current,
+                      pageSize: response.data.size,
+                      total: response.data.total
+                    });
+                  }
+                } else if (Array.isArray(response)) {
+                  commit('SET_CHAT_MESSAGES', response);
+                } else {
+                  console.error('Unexpected chat messages response format:', response);
+                  commit('SET_CHAT_MESSAGES', []);
+                }
+                return _context2.abrupt("return", response);
+              case 11:
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](3);
+                console.error('Error fetching chat messages:', _context2.t0);
+                commit('SET_CHAT_MESSAGES', []);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 16:
+                _context2.prev = 16;
+                commit('SET_LOADING', false);
+                return _context2.finish(16);
+              case 19:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[3, 11, 16, 19]]);
+      }))();
+    },
+    // 创建或更新会话
+    saveSession: function saveSession(_ref5, sessionData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref5.commit;
+                _context3.prev = 1;
+                _context3.next = 4;
+                return _request.default.post('/api/friend/chat/session/save', sessionData);
+              case 4:
+                response = _context3.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_OR_UPDATE_SESSION', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_OR_UPDATE_SESSION', response);
+                }
+                return _context3.abrupt("return", response);
+              case 9:
+                _context3.prev = 9;
+                _context3.t0 = _context3["catch"](1);
+                console.error('Error saving session:', _context3.t0);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 13:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[1, 9]]);
+      }))();
+    },
+    // 获取用户的所有会话列表
+    getUserSessions: function getUserSessions(_ref6, _ref7) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, userId, _ref7$page, page, _ref7$pageSize, pageSize, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref6.commit;
+                userId = _ref7.userId, _ref7$page = _ref7.page, page = _ref7$page === void 0 ? 1 : _ref7$page, _ref7$pageSize = _ref7.pageSize, pageSize = _ref7$pageSize === void 0 ? 20 : _ref7$pageSize;
+                commit('SET_LOADING', true);
+                _context4.prev = 3;
+                _context4.next = 6;
+                return _request.default.get("/api/friend/chat/session/list/".concat(userId, "?page=").concat(page, "&pageSize=").concat(pageSize));
+              case 6:
+                response = _context4.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CHAT_SESSIONS', response.data.records || response.data);
+                  if (response.data.current) {
+                    commit('SET_PAGINATION', {
+                      page: response.data.current,
+                      pageSize: response.data.size,
+                      total: response.data.total
+                    });
+                  }
+                } else if (Array.isArray(response)) {
+                  commit('SET_CHAT_SESSIONS', response);
+                } else {
+                  console.error('Unexpected chat sessions response format:', response);
+                  commit('SET_CHAT_SESSIONS', []);
+                }
+                return _context4.abrupt("return", response);
+              case 11:
+                _context4.prev = 11;
+                _context4.t0 = _context4["catch"](3);
+                console.error('Error fetching user sessions:', _context4.t0);
+                commit('SET_CHAT_SESSIONS', []);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 16:
+                _context4.prev = 16;
+                commit('SET_LOADING', false);
+                return _context4.finish(16);
+              case 19:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[3, 11, 16, 19]]);
+      }))();
+    },
+    // 获取单个会话
+    getSession: function getSession(_ref8, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref8.commit;
+                commit('SET_LOADING', true);
+                _context5.prev = 2;
+                _context5.next = 5;
+                return _request.default.get("/api/friend/chat/session/".concat(id));
+              case 5:
+                response = _context5.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_SESSION', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_SESSION', response);
+                }
+                return _context5.abrupt("return", response);
+              case 10:
+                _context5.prev = 10;
+                _context5.t0 = _context5["catch"](2);
+                console.error('Error fetching session:', _context5.t0);
+                commit('SET_CURRENT_SESSION', null);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 15:
+                _context5.prev = 15;
+                commit('SET_LOADING', false);
+                return _context5.finish(15);
+              case 18:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 更新未读消息数
+    updateUnreadCount: function updateUnreadCount(_ref9, _ref10) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        var commit, userId, friendId, count, response;
+        return _regenerator.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                commit = _ref9.commit;
+                userId = _ref10.userId, friendId = _ref10.friendId, count = _ref10.count;
+                _context6.prev = 2;
+                _context6.next = 5;
+                return _request.default.put('/api/friend/chat/session/unread', {
+                  userId: userId,
+                  friendId: friendId,
+                  count: count
+                });
+              case 5:
+                response = _context6.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('UPDATE_SESSION_UNREAD', {
+                    userId: userId,
+                    friendId: friendId,
+                    count: count
+                  });
+                }
+                return _context6.abrupt("return", response);
+              case 10:
+                _context6.prev = 10;
+                _context6.t0 = _context6["catch"](2);
+                console.error('Error updating unread count:', _context6.t0);
+                return _context6.abrupt("return", Promise.reject(_context6.t0));
+              case 14:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[2, 10]]);
+      }))();
+    },
+    // 删除会话
+    deleteSession: function deleteSession(_ref11, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                commit = _ref11.commit;
+                commit('SET_LOADING', true);
+                _context7.prev = 2;
+                _context7.next = 5;
+                return _request.default.delete("/api/friend/chat/session/".concat(id));
+              case 5:
+                response = _context7.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_SESSION', id);
+                }
+                return _context7.abrupt("return", response);
+              case 10:
+                _context7.prev = 10;
+                _context7.t0 = _context7["catch"](2);
+                console.error('Error deleting session:', _context7.t0);
+                return _context7.abrupt("return", Promise.reject(_context7.t0));
+              case 14:
+                _context7.prev = 14;
+                commit('SET_LOADING', false);
+                return _context7.finish(14);
+              case 17:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, null, [[2, 10, 14, 17]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 47 */
+/*!***********************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/post.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    postList: [],
+    // 帖子列表
+    currentPost: null,
+    // 当前查看的帖子
+    hotPosts: [],
+    // 热门帖子
+    postComments: [],
+    // 帖子评论
+    isLoading: false,
+    pagination: {
+      current: 1,
+      size: 10,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取帖子列表
+    getPostList: function getPostList(state) {
+      return state.postList;
+    },
+    // 获取当前帖子
+    getCurrentPost: function getCurrentPost(state) {
+      return state.currentPost;
+    },
+    // 获取热门帖子
+    getHotPosts: function getHotPosts(state) {
+      return state.hotPosts;
+    },
+    // 获取帖子评论
+    getPostComments: function getPostComments(state) {
+      return state.postComments;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置帖子列表
+    SET_POST_LIST: function SET_POST_LIST(state, list) {
+      state.postList = list;
+    },
+    // 设置当前帖子
+    SET_CURRENT_POST: function SET_CURRENT_POST(state, post) {
+      state.currentPost = post;
+    },
+    // 设置热门帖子
+    SET_HOT_POSTS: function SET_HOT_POSTS(state, posts) {
+      state.hotPosts = posts;
+    },
+    // 设置帖子评论
+    SET_POST_COMMENTS: function SET_POST_COMMENTS(state, comments) {
+      state.postComments = comments;
+    },
+    // 添加帖子
+    ADD_POST: function ADD_POST(state, post) {
+      state.postList.unshift(post);
+    },
+    // 更新帖子
+    UPDATE_POST: function UPDATE_POST(state, post) {
+      var index = state.postList.findIndex(function (item) {
+        return item.id === post.id;
+      });
+      if (index !== -1) {
+        state.postList.splice(index, 1, post);
+      }
+      if (state.currentPost && state.currentPost.id === post.id) {
+        state.currentPost = post;
+      }
+    },
+    // 删除帖子
+    DELETE_POST: function DELETE_POST(state, id) {
+      state.postList = state.postList.filter(function (item) {
+        return item.id !== id;
+      });
+      if (state.currentPost && state.currentPost.id === id) {
+        state.currentPost = null;
+      }
+    },
+    // 添加评论
+    ADD_COMMENT: function ADD_COMMENT(state, comment) {
+      state.postComments.unshift(comment);
+    },
+    // 删除评论
+    DELETE_COMMENT: function DELETE_COMMENT(state, id) {
+      state.postComments = state.postComments.filter(function (item) {
+        return item.id !== id;
+      });
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 创建帖子
+    createPost: function createPost(_ref, postData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                commit('SET_LOADING', true);
+                _context.prev = 2;
+                _context.next = 5;
+                return _request.default.post('/api/post', postData);
+              case 5:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_POST', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_POST', response);
+                }
+                return _context.abrupt("return", response);
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](2);
+                console.error('Error creating post:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 14:
+                _context.prev = 14;
+                commit('SET_LOADING', false);
+                return _context.finish(14);
+              case 17:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 获取帖子详情
+    getPostDetail: function getPostDetail(_ref2, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                commit('SET_LOADING', true);
+                _context2.prev = 2;
+                _context2.next = 5;
+                return _request.default.get("/api/post/".concat(id));
+              case 5:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_POST', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_POST', response);
+                }
+                return _context2.abrupt("return", response);
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
+                console.error('Error fetching post detail:', _context2.t0);
+                commit('SET_CURRENT_POST', null);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 15:
+                _context2.prev = 15;
+                commit('SET_LOADING', false);
+                return _context2.finish(15);
+              case 18:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 更新帖子信息
+    updatePost: function updatePost(_ref3, _ref4) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, id, data, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref3.commit;
+                id = _ref4.id, data = _ref4.data;
+                commit('SET_LOADING', true);
+                _context3.prev = 3;
+                _context3.next = 6;
+                return _request.default.put("/api/post/".concat(id), data);
+              case 6:
+                response = _context3.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('UPDATE_POST', response.data);
+                } else if (response && !response.code) {
+                  commit('UPDATE_POST', response);
+                }
+                return _context3.abrupt("return", response);
+              case 11:
+                _context3.prev = 11;
+                _context3.t0 = _context3["catch"](3);
+                console.error('Error updating post:', _context3.t0);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+                _context3.prev = 15;
+                commit('SET_LOADING', false);
+                return _context3.finish(15);
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 获取热门帖子
+    getHotPosts: function getHotPosts(_ref5) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, response, keys, _i, _keys, key;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref5.commit;
+                commit('SET_LOADING', true);
+                _context4.prev = 2;
+                console.log('Fetching hot posts...');
+                _context4.next = 6;
+                return _request.default.get('/api/post/hot');
+              case 6:
+                response = _context4.sent;
+                console.log('Hot posts API response:', response);
+                if (!(response && response.code === 1 && Array.isArray(response.data))) {
+                  _context4.next = 13;
+                  break;
+                }
+                console.log('Using response.data for hot posts');
+                commit('SET_HOT_POSTS', response.data);
+                _context4.next = 37;
+                break;
+              case 13:
+                if (!Array.isArray(response)) {
+                  _context4.next = 18;
+                  break;
+                }
+                console.log('Using direct response array for hot posts');
+                commit('SET_HOT_POSTS', response);
+                _context4.next = 37;
+                break;
+              case 18:
+                console.error('Unexpected hot posts response format:', response);
+
+                // Try to find array data in response
+                if (!(response && (0, _typeof2.default)(response) === 'object')) {
+                  _context4.next = 36;
+                  break;
+                }
+                keys = Object.keys(response);
+                console.log('Response keys:', keys);
+
+                // Check for records property which is common in pagination responses
+                if (!(response.records && Array.isArray(response.records))) {
+                  _context4.next = 26;
+                  break;
+                }
+                console.log('Found records array in response');
+                commit('SET_HOT_POSTS', response.records);
+                return _context4.abrupt("return", response);
+              case 26:
+                _i = 0, _keys = keys;
+              case 27:
+                if (!(_i < _keys.length)) {
+                  _context4.next = 36;
+                  break;
+                }
+                key = _keys[_i];
+                if (!Array.isArray(response[key])) {
+                  _context4.next = 33;
+                  break;
+                }
+                console.log("Found array in response at key ".concat(key));
+                commit('SET_HOT_POSTS', response[key]);
+                return _context4.abrupt("return", response);
+              case 33:
+                _i++;
+                _context4.next = 27;
+                break;
+              case 36:
+                commit('SET_HOT_POSTS', []);
+              case 37:
+                return _context4.abrupt("return", response);
+              case 40:
+                _context4.prev = 40;
+                _context4.t0 = _context4["catch"](2);
+                console.error('Error fetching hot posts:', _context4.t0);
+                commit('SET_HOT_POSTS', []);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 45:
+                _context4.prev = 45;
+                commit('SET_LOADING', false);
+                return _context4.finish(45);
+              case 48:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[2, 40, 45, 48]]);
+      }))();
+    },
+    // 分页查询帖子
+    getPostPage: function getPostPage(_ref6, _ref7) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, _ref7$current, current, _ref7$size, size, _ref7$userId, userId, url, response;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref6.commit;
+                _ref7$current = _ref7.current, current = _ref7$current === void 0 ? 1 : _ref7$current, _ref7$size = _ref7.size, size = _ref7$size === void 0 ? 10 : _ref7$size, _ref7$userId = _ref7.userId, userId = _ref7$userId === void 0 ? null : _ref7$userId;
+                commit('SET_LOADING', true);
+                _context5.prev = 3;
+                url = "/api/post/page?current=".concat(current, "&size=").concat(size);
+                if (userId) {
+                  url += "&userId=".concat(userId);
+                }
+                _context5.next = 8;
+                return _request.default.get(url);
+              case 8:
+                response = _context5.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_POST_LIST', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_POST_LIST', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected posts page response format:', response);
+                  commit('SET_POST_LIST', []);
+                }
+                return _context5.abrupt("return", response);
+              case 13:
+                _context5.prev = 13;
+                _context5.t0 = _context5["catch"](3);
+                console.error('Error fetching posts page:', _context5.t0);
+                commit('SET_POST_LIST', []);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 18:
+                _context5.prev = 18;
+                commit('SET_LOADING', false);
+                return _context5.finish(18);
+              case 21:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[3, 13, 18, 21]]);
+      }))();
+    },
+    // 搜索帖子
+    searchPosts: function searchPosts(_ref8, _ref9) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        var commit, text, category, gteTime, lteTime, _ref9$page, page, _ref9$pageSize, pageSize, _ref9$orderByHot, orderByHot, url, response;
+        return _regenerator.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                commit = _ref8.commit;
+                text = _ref9.text, category = _ref9.category, gteTime = _ref9.gteTime, lteTime = _ref9.lteTime, _ref9$page = _ref9.page, page = _ref9$page === void 0 ? 1 : _ref9$page, _ref9$pageSize = _ref9.pageSize, pageSize = _ref9$pageSize === void 0 ? 10 : _ref9$pageSize, _ref9$orderByHot = _ref9.orderByHot, orderByHot = _ref9$orderByHot === void 0 ? false : _ref9$orderByHot;
+                commit('SET_LOADING', true);
+                _context6.prev = 3;
+                url = "/api/post/search?page=".concat(page, "&pageSize=").concat(pageSize, "&orderByHot=").concat(orderByHot);
+                if (text) url += "&text=".concat(encodeURIComponent(text));
+                if (category) url += "&category=".concat(encodeURIComponent(category));
+                if (gteTime) url += "&gteTime=".concat(encodeURIComponent(gteTime));
+                if (lteTime) url += "&lteTime=".concat(encodeURIComponent(lteTime));
+                _context6.next = 11;
+                return _request.default.get(url);
+              case 11:
+                response = _context6.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_POST_LIST', response.data.records || []);
+                  if (response.data.current) {
+                    commit('SET_PAGINATION', {
+                      current: response.data.current,
+                      size: response.data.size,
+                      total: response.data.total
+                    });
+                  }
+                } else if (response && response.records) {
+                  commit('SET_POST_LIST', response.records);
+                } else {
+                  console.error('Unexpected search posts response format:', response);
+                  commit('SET_POST_LIST', []);
+                }
+                return _context6.abrupt("return", response);
+              case 16:
+                _context6.prev = 16;
+                _context6.t0 = _context6["catch"](3);
+                console.error('Error searching posts:', _context6.t0);
+                commit('SET_POST_LIST', []);
+                return _context6.abrupt("return", Promise.reject(_context6.t0));
+              case 21:
+                _context6.prev = 21;
+                commit('SET_LOADING', false);
+                return _context6.finish(21);
+              case 24:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[3, 16, 21, 24]]);
+      }))();
+    },
+    // 删除帖子
+    deletePost: function deletePost(_ref10, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                commit = _ref10.commit;
+                commit('SET_LOADING', true);
+                _context7.prev = 2;
+                _context7.next = 5;
+                return _request.default.delete("/api/post/".concat(id));
+              case 5:
+                response = _context7.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_POST', id);
+                }
+                return _context7.abrupt("return", response);
+              case 10:
+                _context7.prev = 10;
+                _context7.t0 = _context7["catch"](2);
+                console.error('Error deleting post:', _context7.t0);
+                return _context7.abrupt("return", Promise.reject(_context7.t0));
+              case 14:
+                _context7.prev = 14;
+                commit('SET_LOADING', false);
+                return _context7.finish(14);
+              case 17:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 创建帖子评论
+    createComment: function createComment(_ref11, commentData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                commit = _ref11.commit;
+                commit('SET_LOADING', true);
+                _context8.prev = 2;
+                _context8.next = 5;
+                return _request.default.post('/api/post-comment', commentData);
+              case 5:
+                response = _context8.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_COMMENT', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_COMMENT', response);
+                }
+                return _context8.abrupt("return", response);
+              case 10:
+                _context8.prev = 10;
+                _context8.t0 = _context8["catch"](2);
+                console.error('Error creating comment:', _context8.t0);
+                return _context8.abrupt("return", Promise.reject(_context8.t0));
+              case 14:
+                _context8.prev = 14;
+                commit('SET_LOADING', false);
+                return _context8.finish(14);
+              case 17:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 删除帖子评论
+    deleteComment: function deleteComment(_ref12, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                commit = _ref12.commit;
+                commit('SET_LOADING', true);
+                _context9.prev = 2;
+                _context9.next = 5;
+                return _request.default.delete("/api/post-comment/".concat(id));
+              case 5:
+                response = _context9.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_COMMENT', id);
+                }
+                return _context9.abrupt("return", response);
+              case 10:
+                _context9.prev = 10;
+                _context9.t0 = _context9["catch"](2);
+                console.error('Error deleting comment:', _context9.t0);
+                return _context9.abrupt("return", Promise.reject(_context9.t0));
+              case 14:
+                _context9.prev = 14;
+                commit('SET_LOADING', false);
+                return _context9.finish(14);
+              case 17:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 分页查询帖子评论
+    getCommentPage: function getCommentPage(_ref13, _ref14) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10() {
+        var commit, _ref14$current, current, _ref14$size, size, _ref14$postId, postId, url, response;
+        return _regenerator.default.wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                commit = _ref13.commit;
+                _ref14$current = _ref14.current, current = _ref14$current === void 0 ? 1 : _ref14$current, _ref14$size = _ref14.size, size = _ref14$size === void 0 ? 10 : _ref14$size, _ref14$postId = _ref14.postId, postId = _ref14$postId === void 0 ? null : _ref14$postId;
+                commit('SET_LOADING', true);
+                _context10.prev = 3;
+                url = "/api/post-comment/page?current=".concat(current, "&size=").concat(size);
+                if (postId) {
+                  url += "&postId=".concat(postId);
+                }
+                _context10.next = 8;
+                return _request.default.get(url);
+              case 8:
+                response = _context10.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_POST_COMMENTS', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_POST_COMMENTS', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected comment page response format:', response);
+                  commit('SET_POST_COMMENTS', []);
+                }
+                return _context10.abrupt("return", response);
+              case 13:
+                _context10.prev = 13;
+                _context10.t0 = _context10["catch"](3);
+                console.error('Error fetching comment page:', _context10.t0);
+                commit('SET_POST_COMMENTS', []);
+                return _context10.abrupt("return", Promise.reject(_context10.t0));
+              case 18:
+                _context10.prev = 18;
+                commit('SET_LOADING', false);
+                return _context10.finish(18);
+              case 21:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10, null, [[3, 13, 18, 21]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 48 */
+/*!*****************************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/shopReview.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    reviewList: [],
+    // 探店列表
+    currentReview: null,
+    // 当前查看的探店
+    reviewComments: [],
+    // 探店评论
+    isLoading: false,
+    pagination: {
+      current: 1,
+      size: 10,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取探店列表
+    getReviewList: function getReviewList(state) {
+      return state.reviewList;
+    },
+    // 获取当前探店
+    getCurrentReview: function getCurrentReview(state) {
+      return state.currentReview;
+    },
+    // 获取探店评论
+    getReviewComments: function getReviewComments(state) {
+      return state.reviewComments;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置探店列表
+    SET_REVIEW_LIST: function SET_REVIEW_LIST(state, list) {
+      state.reviewList = list;
+    },
+    // 设置当前探店
+    SET_CURRENT_REVIEW: function SET_CURRENT_REVIEW(state, review) {
+      state.currentReview = review;
+    },
+    // 设置探店评论
+    SET_REVIEW_COMMENTS: function SET_REVIEW_COMMENTS(state, comments) {
+      state.reviewComments = comments;
+    },
+    // 添加探店
+    ADD_REVIEW: function ADD_REVIEW(state, review) {
+      state.reviewList.unshift(review);
+    },
+    // 更新探店
+    UPDATE_REVIEW: function UPDATE_REVIEW(state, review) {
+      var index = state.reviewList.findIndex(function (item) {
+        return item.id === review.id;
+      });
+      if (index !== -1) {
+        state.reviewList.splice(index, 1, review);
+      }
+      if (state.currentReview && state.currentReview.id === review.id) {
+        state.currentReview = review;
+      }
+    },
+    // 删除探店
+    DELETE_REVIEW: function DELETE_REVIEW(state, id) {
+      state.reviewList = state.reviewList.filter(function (item) {
+        return item.id !== id;
+      });
+      if (state.currentReview && state.currentReview.id === id) {
+        state.currentReview = null;
+      }
+    },
+    // 添加评论
+    ADD_COMMENT: function ADD_COMMENT(state, comment) {
+      state.reviewComments.unshift(comment);
+    },
+    // 删除评论
+    DELETE_COMMENT: function DELETE_COMMENT(state, id) {
+      state.reviewComments = state.reviewComments.filter(function (item) {
+        return item.id !== id;
+      });
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 创建探店
+    createReview: function createReview(_ref, reviewData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                commit('SET_LOADING', true);
+                _context.prev = 2;
+                _context.next = 5;
+                return _request.default.post('/api/shop-review', reviewData);
+              case 5:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_REVIEW', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_REVIEW', response);
+                }
+                return _context.abrupt("return", response);
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](2);
+                console.error('Error creating shop review:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 14:
+                _context.prev = 14;
+                commit('SET_LOADING', false);
+                return _context.finish(14);
+              case 17:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 获取探店详情
+    getReviewDetail: function getReviewDetail(_ref2, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                commit('SET_LOADING', true);
+                _context2.prev = 2;
+                _context2.next = 5;
+                return _request.default.get("/api/shop-review/".concat(id));
+              case 5:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_REVIEW', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_REVIEW', response);
+                }
+                return _context2.abrupt("return", response);
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
+                console.error('Error fetching shop review detail:', _context2.t0);
+                commit('SET_CURRENT_REVIEW', null);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 15:
+                _context2.prev = 15;
+                commit('SET_LOADING', false);
+                return _context2.finish(15);
+              case 18:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 更新探店信息
+    updateReview: function updateReview(_ref3, _ref4) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, id, data, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref3.commit;
+                id = _ref4.id, data = _ref4.data;
+                commit('SET_LOADING', true);
+                _context3.prev = 3;
+                _context3.next = 6;
+                return _request.default.put("/api/shop-review/".concat(id), data);
+              case 6:
+                response = _context3.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('UPDATE_REVIEW', response.data);
+                } else if (response && !response.code) {
+                  commit('UPDATE_REVIEW', response);
+                }
+                return _context3.abrupt("return", response);
+              case 11:
+                _context3.prev = 11;
+                _context3.t0 = _context3["catch"](3);
+                console.error('Error updating shop review:', _context3.t0);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+                _context3.prev = 15;
+                commit('SET_LOADING', false);
+                return _context3.finish(15);
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 删除探店
+    deleteReview: function deleteReview(_ref5, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref5.commit;
+                commit('SET_LOADING', true);
+                _context4.prev = 2;
+                _context4.next = 5;
+                return _request.default.delete("/api/shop-review/".concat(id));
+              case 5:
+                response = _context4.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_REVIEW', id);
+                }
+                return _context4.abrupt("return", response);
+              case 10:
+                _context4.prev = 10;
+                _context4.t0 = _context4["catch"](2);
+                console.error('Error deleting shop review:', _context4.t0);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 14:
+                _context4.prev = 14;
+                commit('SET_LOADING', false);
+                return _context4.finish(14);
+              case 17:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 分页查询探店
+    getReviewPage: function getReviewPage(_ref6, _ref7) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, _ref7$current, current, _ref7$size, size, _ref7$shopId, shopId, _ref7$userId, userId, url, response;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref6.commit;
+                _ref7$current = _ref7.current, current = _ref7$current === void 0 ? 1 : _ref7$current, _ref7$size = _ref7.size, size = _ref7$size === void 0 ? 10 : _ref7$size, _ref7$shopId = _ref7.shopId, shopId = _ref7$shopId === void 0 ? null : _ref7$shopId, _ref7$userId = _ref7.userId, userId = _ref7$userId === void 0 ? null : _ref7$userId;
+                commit('SET_LOADING', true);
+                _context5.prev = 3;
+                url = "/api/shop-review/page?current=".concat(current, "&size=").concat(size);
+                if (shopId) {
+                  url += "&shopId=".concat(shopId);
+                }
+                if (userId) {
+                  url += "&userId=".concat(userId);
+                }
+                _context5.next = 9;
+                return _request.default.get(url);
+              case 9:
+                response = _context5.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_REVIEW_LIST', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_REVIEW_LIST', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected review page response format:', response);
+                  commit('SET_REVIEW_LIST', []);
+                }
+                return _context5.abrupt("return", response);
+              case 14:
+                _context5.prev = 14;
+                _context5.t0 = _context5["catch"](3);
+                console.error('Error fetching review page:', _context5.t0);
+                commit('SET_REVIEW_LIST', []);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 19:
+                _context5.prev = 19;
+                commit('SET_LOADING', false);
+                return _context5.finish(19);
+              case 22:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[3, 14, 19, 22]]);
+      }))();
+    },
+    // 创建探店评论
+    createComment: function createComment(_ref8, commentData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                commit = _ref8.commit;
+                commit('SET_LOADING', true);
+                _context6.prev = 2;
+                _context6.next = 5;
+                return _request.default.post('/api/shop-review-comment', commentData);
+              case 5:
+                response = _context6.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_COMMENT', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_COMMENT', response);
+                }
+                return _context6.abrupt("return", response);
+              case 10:
+                _context6.prev = 10;
+                _context6.t0 = _context6["catch"](2);
+                console.error('Error creating shop review comment:', _context6.t0);
+                return _context6.abrupt("return", Promise.reject(_context6.t0));
+              case 14:
+                _context6.prev = 14;
+                commit('SET_LOADING', false);
+                return _context6.finish(14);
+              case 17:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 删除探店评论
+    deleteComment: function deleteComment(_ref9, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                commit = _ref9.commit;
+                commit('SET_LOADING', true);
+                _context7.prev = 2;
+                _context7.next = 5;
+                return _request.default.delete("/api/shop-review-comment/".concat(id));
+              case 5:
+                response = _context7.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  commit('DELETE_COMMENT', id);
+                }
+                return _context7.abrupt("return", response);
+              case 10:
+                _context7.prev = 10;
+                _context7.t0 = _context7["catch"](2);
+                console.error('Error deleting shop review comment:', _context7.t0);
+                return _context7.abrupt("return", Promise.reject(_context7.t0));
+              case 14:
+                _context7.prev = 14;
+                commit('SET_LOADING', false);
+                return _context7.finish(14);
+              case 17:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 分页查询探店评论
+    getCommentPage: function getCommentPage(_ref10, _ref11) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8() {
+        var commit, _ref11$current, current, _ref11$size, size, _ref11$reviewId, reviewId, _ref11$userId, userId, url, response;
+        return _regenerator.default.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                commit = _ref10.commit;
+                _ref11$current = _ref11.current, current = _ref11$current === void 0 ? 1 : _ref11$current, _ref11$size = _ref11.size, size = _ref11$size === void 0 ? 10 : _ref11$size, _ref11$reviewId = _ref11.reviewId, reviewId = _ref11$reviewId === void 0 ? null : _ref11$reviewId, _ref11$userId = _ref11.userId, userId = _ref11$userId === void 0 ? null : _ref11$userId;
+                commit('SET_LOADING', true);
+                _context8.prev = 3;
+                url = "/api/shop-review-comment/page?current=".concat(current, "&size=").concat(size);
+                if (reviewId) {
+                  url += "&reviewId=".concat(reviewId);
+                }
+                if (userId) {
+                  url += "&userId=".concat(userId);
+                }
+                _context8.next = 9;
+                return _request.default.get(url);
+              case 9:
+                response = _context8.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_REVIEW_COMMENTS', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_REVIEW_COMMENTS', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected comment page response format:', response);
+                  commit('SET_REVIEW_COMMENTS', []);
+                }
+                return _context8.abrupt("return", response);
+              case 14:
+                _context8.prev = 14;
+                _context8.t0 = _context8["catch"](3);
+                console.error('Error fetching comment page:', _context8.t0);
+                commit('SET_REVIEW_COMMENTS', []);
+                return _context8.abrupt("return", Promise.reject(_context8.t0));
+              case 19:
+                _context8.prev = 19;
+                commit('SET_LOADING', false);
+                return _context8.finish(19);
+              case 22:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, null, [[3, 14, 19, 22]]);
+      }))();
+    },
+    // 获取探店的所有评论
+    getReviewComments: function getReviewComments(_ref12, reviewId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                commit = _ref12.commit;
+                commit('SET_LOADING', true);
+                _context9.prev = 2;
+                _context9.next = 5;
+                return _request.default.get("/api/shop-review-comment/review/".concat(reviewId));
+              case 5:
+                response = _context9.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_REVIEW_COMMENTS', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_REVIEW_COMMENTS', response);
+                } else {
+                  console.error('Unexpected review comments response format:', response);
+                  commit('SET_REVIEW_COMMENTS', []);
+                }
+                return _context9.abrupt("return", response);
+              case 10:
+                _context9.prev = 10;
+                _context9.t0 = _context9["catch"](2);
+                console.error('Error fetching review comments:', _context9.t0);
+                commit('SET_REVIEW_COMMENTS', []);
+                return _context9.abrupt("return", Promise.reject(_context9.t0));
+              case 15:
+                _context9.prev = 15;
+                commit('SET_LOADING', false);
+                return _context9.finish(15);
+              case 18:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, null, [[2, 10, 15, 18]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 49 */
+/*!**************************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/product.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    productList: [],
+    // 商品列表
+    currentProduct: null,
+    // 当前查看的商品
+    categoryList: [],
+    // 商品分类列表
+    currentCategory: null,
+    // 当前查看的分类
+    isLoading: false,
+    pagination: {
+      current: 1,
+      size: 10,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取商品列表
+    getProductList: function getProductList(state) {
+      return state.productList;
+    },
+    // 获取当前商品
+    getCurrentProduct: function getCurrentProduct(state) {
+      return state.currentProduct;
+    },
+    // 获取商品分类列表
+    getCategoryList: function getCategoryList(state) {
+      return state.categoryList;
+    },
+    // 获取当前分类
+    getCurrentCategory: function getCurrentCategory(state) {
+      return state.currentCategory;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置商品列表
+    SET_PRODUCT_LIST: function SET_PRODUCT_LIST(state, list) {
+      state.productList = list;
+    },
+    // 设置当前商品
+    SET_CURRENT_PRODUCT: function SET_CURRENT_PRODUCT(state, product) {
+      state.currentProduct = product;
+    },
+    // 设置商品分类列表
+    SET_CATEGORY_LIST: function SET_CATEGORY_LIST(state, list) {
+      state.categoryList = list;
+    },
+    // 设置当前分类
+    SET_CURRENT_CATEGORY: function SET_CURRENT_CATEGORY(state, category) {
+      state.currentCategory = category;
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 获取店铺商品详情
+    getProductDetail: function getProductDetail(_ref, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                commit('SET_LOADING', true);
+                _context.prev = 2;
+                _context.next = 5;
+                return _request.default.get("/api/shop-product/".concat(id));
+              case 5:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_PRODUCT', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_PRODUCT', response);
+                }
+                return _context.abrupt("return", response);
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](2);
+                console.error('Error fetching product detail:', _context.t0);
+                commit('SET_CURRENT_PRODUCT', null);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 15:
+                _context.prev = 15;
+                commit('SET_LOADING', false);
+                return _context.finish(15);
+              case 18:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 分页查询店铺商品
+    getProductPage: function getProductPage(_ref2, _ref3) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, _ref3$current, current, _ref3$size, size, _ref3$shopId, shopId, _ref3$categoryId, categoryId, url, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                _ref3$current = _ref3.current, current = _ref3$current === void 0 ? 1 : _ref3$current, _ref3$size = _ref3.size, size = _ref3$size === void 0 ? 10 : _ref3$size, _ref3$shopId = _ref3.shopId, shopId = _ref3$shopId === void 0 ? null : _ref3$shopId, _ref3$categoryId = _ref3.categoryId, categoryId = _ref3$categoryId === void 0 ? null : _ref3$categoryId;
+                commit('SET_LOADING', true);
+                _context2.prev = 3;
+                url = "/api/shop-product/page?current=".concat(current, "&size=").concat(size);
+                if (shopId) {
+                  url += "&shopId=".concat(shopId);
+                }
+                if (categoryId) {
+                  url += "&categoryId=".concat(categoryId);
+                }
+                _context2.next = 9;
+                return _request.default.get(url);
+              case 9:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_PRODUCT_LIST', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_PRODUCT_LIST', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected product page response format:', response);
+                  commit('SET_PRODUCT_LIST', []);
+                }
+                return _context2.abrupt("return", response);
+              case 14:
+                _context2.prev = 14;
+                _context2.t0 = _context2["catch"](3);
+                console.error('Error fetching product page:', _context2.t0);
+                commit('SET_PRODUCT_LIST', []);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 19:
+                _context2.prev = 19;
+                commit('SET_LOADING', false);
+                return _context2.finish(19);
+              case 22:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[3, 14, 19, 22]]);
+      }))();
+    },
+    // 获取商品分类详情
+    getCategoryDetail: function getCategoryDetail(_ref4, id) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref4.commit;
+                commit('SET_LOADING', true);
+                _context3.prev = 2;
+                _context3.next = 5;
+                return _request.default.get("/api/shop-product-category/".concat(id));
+              case 5:
+                response = _context3.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_CATEGORY', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_CATEGORY', response);
+                }
+                return _context3.abrupt("return", response);
+              case 10:
+                _context3.prev = 10;
+                _context3.t0 = _context3["catch"](2);
+                console.error('Error fetching category detail:', _context3.t0);
+                commit('SET_CURRENT_CATEGORY', null);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+                _context3.prev = 15;
+                commit('SET_LOADING', false);
+                return _context3.finish(15);
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 分页查询商品分类
+    getCategoryPage: function getCategoryPage(_ref5, _ref6) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, _ref6$current, current, _ref6$size, size, _ref6$shopId, shopId, url, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref5.commit;
+                _ref6$current = _ref6.current, current = _ref6$current === void 0 ? 1 : _ref6$current, _ref6$size = _ref6.size, size = _ref6$size === void 0 ? 10 : _ref6$size, _ref6$shopId = _ref6.shopId, shopId = _ref6$shopId === void 0 ? null : _ref6$shopId;
+                commit('SET_LOADING', true);
+                _context4.prev = 3;
+                url = "/api/shop-product-category/page?current=".concat(current, "&size=").concat(size);
+                if (shopId) {
+                  url += "&shopId=".concat(shopId);
+                }
+                _context4.next = 8;
+                return _request.default.get(url);
+              case 8:
+                response = _context4.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CATEGORY_LIST', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_CATEGORY_LIST', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected category page response format:', response);
+                  commit('SET_CATEGORY_LIST', []);
+                }
+                return _context4.abrupt("return", response);
+              case 13:
+                _context4.prev = 13;
+                _context4.t0 = _context4["catch"](3);
+                console.error('Error fetching category page:', _context4.t0);
+                commit('SET_CATEGORY_LIST', []);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 18:
+                _context4.prev = 18;
+                commit('SET_LOADING', false);
+                return _context4.finish(18);
+              case 21:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[3, 13, 18, 21]]);
+      }))();
+    },
+    // 获取店铺的所有商品分类
+    getShopCategories: function getShopCategories(_ref7, shopId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref7.commit;
+                commit('SET_LOADING', true);
+                _context5.prev = 2;
+                _context5.next = 5;
+                return _request.default.get("/api/shop-product-category/shop/".concat(shopId));
+              case 5:
+                response = _context5.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_CATEGORY_LIST', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_CATEGORY_LIST', response);
+                } else {
+                  console.error('Unexpected shop categories response format:', response);
+                  commit('SET_CATEGORY_LIST', []);
+                }
+                return _context5.abrupt("return", response);
+              case 10:
+                _context5.prev = 10;
+                _context5.t0 = _context5["catch"](2);
+                console.error('Error fetching shop categories:', _context5.t0);
+                commit('SET_CATEGORY_LIST', []);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 15:
+                _context5.prev = 15;
+                commit('SET_LOADING', false);
+                return _context5.finish(15);
+              case 18:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[2, 10, 15, 18]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 50 */
+/*!************************************************************!*\
+  !*** C:/Users/ykh/Desktop/MyApp-wx/store/modules/order.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 39));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 41));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _request = _interopRequireDefault(__webpack_require__(/*! @/utils/request */ 34));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _default = {
+  namespaced: true,
+  state: {
+    orderList: [],
+    // 订单列表
+    currentOrder: null,
+    // 当前查看的订单
+    isLoading: false,
+    pagination: {
+      current: 1,
+      size: 10,
+      total: 0
+    }
+  },
+  getters: {
+    // 获取订单列表
+    getOrderList: function getOrderList(state) {
+      return state.orderList;
+    },
+    // 获取当前订单
+    getCurrentOrder: function getCurrentOrder(state) {
+      return state.currentOrder;
+    },
+    // 加载状态
+    isLoading: function isLoading(state) {
+      return state.isLoading;
+    },
+    // 分页信息
+    pagination: function pagination(state) {
+      return state.pagination;
+    }
+  },
+  mutations: {
+    // 设置订单列表
+    SET_ORDER_LIST: function SET_ORDER_LIST(state, list) {
+      state.orderList = list;
+    },
+    // 设置当前订单
+    SET_CURRENT_ORDER: function SET_CURRENT_ORDER(state, order) {
+      state.currentOrder = order;
+    },
+    // 添加订单
+    ADD_ORDER: function ADD_ORDER(state, order) {
+      state.orderList.unshift(order);
+    },
+    // 更新订单
+    UPDATE_ORDER: function UPDATE_ORDER(state, order) {
+      var index = state.orderList.findIndex(function (item) {
+        return item.id === order.id;
+      });
+      if (index !== -1) {
+        state.orderList.splice(index, 1, order);
+      }
+      if (state.currentOrder && state.currentOrder.id === order.id) {
+        state.currentOrder = order;
+      }
+    },
+    // 设置加载状态
+    SET_LOADING: function SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    // 设置分页信息
+    SET_PAGINATION: function SET_PAGINATION(state, pagination) {
+      state.pagination = _objectSpread(_objectSpread({}, state.pagination), pagination);
+    }
+  },
+  actions: {
+    // 创建订单
+    createOrder: function createOrder(_ref, orderData) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                commit = _ref.commit;
+                commit('SET_LOADING', true);
+                _context.prev = 2;
+                _context.next = 5;
+                return _request.default.post('/api/order/create', orderData);
+              case 5:
+                response = _context.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('ADD_ORDER', response.data);
+                } else if (response && !response.code) {
+                  commit('ADD_ORDER', response);
+                }
+                return _context.abrupt("return", response);
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](2);
+                console.error('Error creating order:', _context.t0);
+                return _context.abrupt("return", Promise.reject(_context.t0));
+              case 14:
+                _context.prev = 14;
+                commit('SET_LOADING', false);
+                return _context.finish(14);
+              case 17:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[2, 10, 14, 17]]);
+      }))();
+    },
+    // 获取订单详情
+    getOrderDetail: function getOrderDetail(_ref2, _ref3) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var commit, orderId, userId, response;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                orderId = _ref3.orderId, userId = _ref3.userId;
+                commit('SET_LOADING', true);
+                _context2.prev = 3;
+                _context2.next = 6;
+                return _request.default.get("/api/order/detail?orderId=".concat(orderId, "&userId=").concat(userId));
+              case 6:
+                response = _context2.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_CURRENT_ORDER', response.data);
+                } else if (response && !response.code) {
+                  commit('SET_CURRENT_ORDER', response);
+                }
+                return _context2.abrupt("return", response);
+              case 11:
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](3);
+                console.error('Error fetching order detail:', _context2.t0);
+                commit('SET_CURRENT_ORDER', null);
+                return _context2.abrupt("return", Promise.reject(_context2.t0));
+              case 16:
+                _context2.prev = 16;
+                commit('SET_LOADING', false);
+                return _context2.finish(16);
+              case 19:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[3, 11, 16, 19]]);
+      }))();
+    },
+    // 获取用户所有订单
+    getUserOrders: function getUserOrders(_ref4, userId) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var commit, response;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref4.commit;
+                commit('SET_LOADING', true);
+                _context3.prev = 2;
+                _context3.next = 5;
+                return _request.default.get("/api/order/user/".concat(userId));
+              case 5:
+                response = _context3.sent;
+                if (response && response.code === 1 && Array.isArray(response.data)) {
+                  commit('SET_ORDER_LIST', response.data);
+                } else if (Array.isArray(response)) {
+                  commit('SET_ORDER_LIST', response);
+                } else {
+                  console.error('Unexpected user orders response format:', response);
+                  commit('SET_ORDER_LIST', []);
+                }
+                return _context3.abrupt("return", response);
+              case 10:
+                _context3.prev = 10;
+                _context3.t0 = _context3["catch"](2);
+                console.error('Error fetching user orders:', _context3.t0);
+                commit('SET_ORDER_LIST', []);
+                return _context3.abrupt("return", Promise.reject(_context3.t0));
+              case 15:
+                _context3.prev = 15;
+                commit('SET_LOADING', false);
+                return _context3.finish(15);
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[2, 10, 15, 18]]);
+      }))();
+    },
+    // 分页查询用户订单
+    getUserOrdersPage: function getUserOrdersPage(_ref5, _ref6) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var commit, userId, _ref6$current, current, _ref6$size, size, _ref6$status, status, url, response;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref5.commit;
+                userId = _ref6.userId, _ref6$current = _ref6.current, current = _ref6$current === void 0 ? 1 : _ref6$current, _ref6$size = _ref6.size, size = _ref6$size === void 0 ? 10 : _ref6$size, _ref6$status = _ref6.status, status = _ref6$status === void 0 ? null : _ref6$status;
+                commit('SET_LOADING', true);
+                _context4.prev = 3;
+                url = "/api/order/user/".concat(userId, "/page?current=").concat(current, "&size=").concat(size);
+                if (status !== null) {
+                  url += "&status=".concat(status);
+                }
+                _context4.next = 8;
+                return _request.default.get(url);
+              case 8:
+                response = _context4.sent;
+                if (response && response.code === 1 && response.data) {
+                  commit('SET_ORDER_LIST', response.data.records || []);
+                  commit('SET_PAGINATION', {
+                    current: response.data.current,
+                    size: response.data.size,
+                    total: response.data.total
+                  });
+                } else if (response && response.records) {
+                  commit('SET_ORDER_LIST', response.records);
+                  commit('SET_PAGINATION', {
+                    current: response.current,
+                    size: response.size,
+                    total: response.total
+                  });
+                } else {
+                  console.error('Unexpected user orders page response format:', response);
+                  commit('SET_ORDER_LIST', []);
+                }
+                return _context4.abrupt("return", response);
+              case 13:
+                _context4.prev = 13;
+                _context4.t0 = _context4["catch"](3);
+                console.error('Error fetching user orders page:', _context4.t0);
+                commit('SET_ORDER_LIST', []);
+                return _context4.abrupt("return", Promise.reject(_context4.t0));
+              case 18:
+                _context4.prev = 18;
+                commit('SET_LOADING', false);
+                return _context4.finish(18);
+              case 21:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[3, 13, 18, 21]]);
+      }))();
+    },
+    // 取消订单
+    cancelOrder: function cancelOrder(_ref7, _ref8) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var commit, userId, orderId, response, updatedOrder;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref7.commit;
+                userId = _ref8.userId, orderId = _ref8.orderId;
+                commit('SET_LOADING', true);
+                _context5.prev = 3;
+                _context5.next = 6;
+                return _request.default.put("/api/order/".concat(userId, "/").concat(orderId, "/cancel"));
+              case 6:
+                response = _context5.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  // 如果成功，更新订单状态
+                  updatedOrder = _objectSpread(_objectSpread({}, state.currentOrder), {}, {
+                    status: 'CANCELED'
+                  });
+                  commit('UPDATE_ORDER', updatedOrder);
+                }
+                return _context5.abrupt("return", response);
+              case 11:
+                _context5.prev = 11;
+                _context5.t0 = _context5["catch"](3);
+                console.error('Error canceling order:', _context5.t0);
+                return _context5.abrupt("return", Promise.reject(_context5.t0));
+              case 15:
+                _context5.prev = 15;
+                commit('SET_LOADING', false);
+                return _context5.finish(15);
+              case 18:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 支付订单
+    payOrder: function payOrder(_ref9, _ref10) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        var commit, userId, orderId, response, updatedOrder;
+        return _regenerator.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                commit = _ref9.commit;
+                userId = _ref10.userId, orderId = _ref10.orderId;
+                commit('SET_LOADING', true);
+                _context6.prev = 3;
+                _context6.next = 6;
+                return _request.default.put("/api/order/".concat(userId, "/").concat(orderId, "/pay"));
+              case 6:
+                response = _context6.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  // 如果成功，更新订单状态
+                  updatedOrder = _objectSpread(_objectSpread({}, state.currentOrder), {}, {
+                    status: 'PAID'
+                  });
+                  commit('UPDATE_ORDER', updatedOrder);
+                }
+                return _context6.abrupt("return", response);
+              case 11:
+                _context6.prev = 11;
+                _context6.t0 = _context6["catch"](3);
+                console.error('Error paying order:', _context6.t0);
+                return _context6.abrupt("return", Promise.reject(_context6.t0));
+              case 15:
+                _context6.prev = 15;
+                commit('SET_LOADING', false);
+                return _context6.finish(15);
+              case 18:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[3, 11, 15, 18]]);
+      }))();
+    },
+    // 完成订单
+    completeOrder: function completeOrder(_ref11, _ref12) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        var commit, userId, orderId, response, updatedOrder;
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                commit = _ref11.commit;
+                userId = _ref12.userId, orderId = _ref12.orderId;
+                commit('SET_LOADING', true);
+                _context7.prev = 3;
+                _context7.next = 6;
+                return _request.default.put("/api/order/".concat(userId, "/").concat(orderId, "/complete"));
+              case 6:
+                response = _context7.sent;
+                if (response && (response.code === 1 || response.success)) {
+                  // 如果成功，更新订单状态
+                  updatedOrder = _objectSpread(_objectSpread({}, state.currentOrder), {}, {
+                    status: 'COMPLETED'
+                  });
+                  commit('UPDATE_ORDER', updatedOrder);
+                }
+                return _context7.abrupt("return", response);
+              case 11:
+                _context7.prev = 11;
+                _context7.t0 = _context7["catch"](3);
+                console.error('Error completing order:', _context7.t0);
+                return _context7.abrupt("return", Promise.reject(_context7.t0));
+              case 15:
+                _context7.prev = 15;
+                commit('SET_LOADING', false);
+                return _context7.finish(15);
+              case 18:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, null, [[3, 11, 15, 18]]);
+      }))();
+    }
+  }
+};
+exports.default = _default;
 
 /***/ })
 ]]);

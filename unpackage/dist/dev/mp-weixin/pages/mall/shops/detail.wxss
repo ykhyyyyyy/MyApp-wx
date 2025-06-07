@@ -1,0 +1,847 @@
+
+.container {
+	background-color: #F8F7F2;
+	min-height: 100vh;
+}
+.back-button {
+	position: fixed;
+	top: calc(25px + 50rpx);
+	left: 30rpx;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	background-color: rgba(255, 255, 255, 0.8);
+	padding: 10rpx 20rpx;
+	border-radius: 30rpx;
+	box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+	border: 1rpx solid #e0c9d1;
+}
+.back-arrow {
+	font-size: 40rpx;
+	color: #8A3324;
+	font-weight: bold;
+	margin-right: 10rpx;
+}
+.back-text {
+	font-size: 28rpx;
+	color: #333;
+	font-family: "FangSong", serif;
+}
+
+/* 加载状态 */
+.loading-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+}
+.loading-container.small {
+	padding: 30rpx 0;
+}
+.loading-spinner {
+	width: 60rpx;
+	height: 60rpx;
+	border: 6rpx solid #f3f3f3;
+	border-top: 6rpx solid #7EC4CF;
+	border-radius: 50%;
+	-webkit-animation: spin 1s linear infinite;
+	        animation: spin 1s linear infinite;
+	margin-bottom: 20rpx;
+}
+.loading-spinner.small {
+	width: 40rpx;
+	height: 40rpx;
+	border-width: 4rpx;
+	margin-bottom: 10rpx;
+}
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); transform: rotate(0deg);
+}
+100% { -webkit-transform: rotate(360deg); transform: rotate(360deg);
+}
+}
+@keyframes spin {
+0% { -webkit-transform: rotate(0deg); transform: rotate(0deg);
+}
+100% { -webkit-transform: rotate(360deg); transform: rotate(360deg);
+}
+}
+.loading-text {
+	font-size: 28rpx;
+	color: #999;
+}
+.empty-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 0;
+}
+.empty-container.small {
+	padding: 40rpx 0;
+}
+.empty-text {
+	font-size: 28rpx;
+	color: #999;
+}
+
+/* 店铺信息 */
+.shop-info-card {
+	margin: 30rpx;
+	background-color: #fff;
+	border-radius: 15rpx;
+	padding: 30rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #e0c9d1;
+}
+.shop-header {
+	display: flex;
+}
+.shop-logo {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 15rpx;
+	margin-right: 20rpx;
+	border: 1rpx solid #f0f0f0;
+}
+.shop-details {
+	flex: 1;
+}
+.shop-name-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10rpx;
+}
+.shop-name {
+	font-size: 32rpx;
+	color: #333;
+	font-weight: bold;
+	font-family: "FangSong", serif;
+	margin-right: 10rpx;
+}
+.shop-badges {
+	display: flex;
+}
+.shop-badge {
+	font-size: 20rpx;
+	padding: 2rpx 8rpx;
+	border-radius: 6rpx;
+	margin-left: 10rpx;
+}
+.shop-badge.official {
+	background-color: rgba(126, 196, 207, 0.1);
+	color: #7EC4CF;
+	border: 1rpx solid #7EC4CF;
+}
+.shop-badge.new {
+	background-color: rgba(138, 51, 36, 0.1);
+	color: #8A3324;
+	border: 1rpx solid #8A3324;
+}
+.shop-rating {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10rpx;
+}
+.rating-score {
+	font-size: 24rpx;
+	color: #FF9500;
+	font-weight: bold;
+	margin-right: 6rpx;
+}
+.rating-stars {
+	display: flex;
+	margin-right: 6rpx;
+}
+.star {
+	color: #DDDDDD;
+	font-size: 24rpx;
+}
+.star.active {
+	color: #FF9500;
+}
+.rating-count {
+	font-size: 20rpx;
+	color: #999;
+}
+.shop-description {
+	font-size: 24rpx;
+	color: #666;
+	line-height: 1.5;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+
+/* 搜索框 */
+.search-box {
+	padding: 0 30rpx 20rpx;
+}
+.search-input-wrapper {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	border-radius: 30rpx;
+	padding: 0 20rpx;
+	border: 1rpx solid #e0c9d1;
+	box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
+}
+.search-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 10rpx;
+}
+.search-input {
+	flex: 1;
+	border: none;
+	background: transparent;
+	font-size: 28rpx;
+	padding: 16rpx 0;
+	outline: none;
+}
+
+/* 左右布局区域 */
+.content-layout {
+	display: flex;
+	height: calc(100vh - 480rpx); /* 调整高度以适应新的顶部布局 */
+	margin: 0 30rpx 30rpx;
+}
+
+/* 左侧分类侧边栏 */
+.category-sidebar {
+	width: 200rpx;
+	background-color: #fff;
+	border-radius: 15rpx 0 0 15rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #e0c9d1;
+	border-right: none;
+}
+.category-list {
+	display: flex;
+	flex-direction: column;
+}
+.category-item {
+	padding: 30rpx 20rpx;
+	text-align: center;
+	border-bottom: 1rpx solid #f0f0f0;
+}
+.category-item.active {
+	background-color: rgba(138, 51, 36, 0.1);
+	border-left: 4rpx solid #8A3324;
+}
+.category-name {
+	font-size: 26rpx;
+	color: #666;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.category-item.active .category-name {
+	color: #8A3324;
+	font-weight: bold;
+}
+
+/* 右侧商品区域 */
+.product-area {
+	flex: 1;
+	background-color: #fff;
+	border-radius: 0 15rpx 15rpx 0;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #e0c9d1;
+	padding: 20rpx;
+}
+
+/* 商品列表 */
+.products-grid {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 -10rpx;
+}
+.product-card {
+	width: calc(100% - 20rpx);
+	margin: 10rpx;
+	background-color: #fff;
+	border-radius: 10rpx;
+	overflow: hidden;
+	box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #f0f0f0;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	padding: 15rpx;
+	height: 180rpx;
+}
+.product-image {
+	width: 150rpx;
+	height: 150rpx;
+	border-radius: 8rpx;
+	flex-shrink: 0;
+}
+.product-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 0 15rpx;
+	overflow: hidden;
+}
+.product-name {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: bold;
+	margin-bottom: 10rpx;
+	font-family: "FangSong", serif;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+.product-price-row {
+	display: flex;
+	flex-direction: column;
+}
+.product-price {
+	font-size: 32rpx;
+	color: #FF5722;
+	font-weight: bold;
+	margin-bottom: 6rpx;
+}
+.product-sold {
+	font-size: 22rpx;
+	color: #999;
+}
+.load-more, .no-more {
+	text-align: center;
+	padding: 30rpx 0;
+	font-size: 26rpx;
+	color: #999;
+}
+
+/* 店铺操作按钮 */
+.shop-actions {
+	display: none;
+}
+.explore-btn, .coupon-btn {
+	display: none;
+}
+
+/* 店铺操作按钮 - 移除此部分 */
+.shop-actions {
+	display: none;
+}
+.explore-btn, .coupon-btn {
+	display: none;
+}
+
+/* 店铺信息 */
+.shop-info-card {
+	margin: 30rpx;
+	background-color: #fff;
+	border-radius: 15rpx;
+	padding: 30rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #e0c9d1;
+}
+
+/* 功能选项卡 */
+.shop-tabs {
+	display: flex;
+	justify-content: space-around;
+	background: #fff;
+	margin: 0 30rpx 30rpx;
+	padding: 20rpx 0;
+	border-radius: 15rpx;
+	box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
+	border: 1rpx solid #e0c9d1;
+}
+.shop-tab-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	padding: 15rpx 0;
+	flex: 1;
+}
+.shop-tab-item.active {
+	color: #8A3324;
+	font-weight: bold;
+}
+.shop-tab-item.active::after {
+	content: '';
+	position: absolute;
+	bottom: -10rpx;
+	left: 30%;
+	width: 40%;
+	height: 6rpx;
+	background-color: #8A3324;
+	border-radius: 3rpx;
+}
+.tab-icon {
+	font-size: 40rpx;
+	margin-bottom: 10rpx;
+}
+.tab-text {
+	font-size: 24rpx;
+	font-family: "FangSong", serif;
+}
+.tab-badge {
+	position: absolute;
+	top: 0;
+	right: 20%;
+	background-color: #FF5722;
+	color: white;
+	font-size: 20rpx;
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 优惠券弹窗 */
+.coupon-popup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.coupon-popup-mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.coupon-popup-content {
+	position: relative;
+	width: 92%;
+	max-height: 85%;
+	background-color: #fff;
+	border-radius: 20rpx;
+	overflow: hidden;
+	z-index: 1001;
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+}
+.coupon-popup-header {
+	padding: 30rpx;
+	background: linear-gradient(135deg, #8A3324, #7EC4CF);
+	color: white;
+	border-bottom: 1rpx solid #f0f0f0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.coupon-popup-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: white;
+	font-family: "FangSong", serif;
+}
+.coupon-popup-close {
+	font-size: 40rpx;
+	color: white;
+	padding: 10rpx;
+}
+.coupon-list {
+	flex: 1;
+	max-height: 800rpx;
+}
+.coupon-items {
+	padding: 20rpx;
+}
+
+/* 优惠券样式 */
+.coupon-item {
+	display: flex;
+	margin-bottom: 20rpx;
+	height: 200rpx;
+	background: linear-gradient(90deg, #FFF8F3, #FFF);
+	border-radius: 10rpx;
+	overflow: hidden;
+	box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+	position: relative;
+}
+.coupon-item::before {
+	content: '';
+	position: absolute;
+	left: 25%;
+	top: -8rpx;
+	width: 16rpx;
+	height: 16rpx;
+	border-radius: 50%;
+	background-color: #F8F7F2;
+}
+.coupon-item::after {
+	content: '';
+	position: absolute;
+	left: 25%;
+	bottom: -8rpx;
+	width: 16rpx;
+	height: 16rpx;
+	border-radius: 50%;
+	background-color: #F8F7F2;
+}
+.coupon-left {
+	width: 25%;
+	background-color: #8A3324;
+	color: #FFF;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 0 10rpx;
+	position: relative;
+}
+.coupon-left::before {
+	content: '';
+	position: absolute;
+	right: -10rpx;
+	top: 20rpx;
+	bottom: 20rpx;
+	width: 1rpx;
+	background: repeating-linear-gradient(to bottom, #FFF, #FFF 6rpx, transparent 6rpx, transparent 12rpx);
+}
+.coupon-value {
+	display: flex;
+	align-items: baseline;
+}
+.coupon-currency {
+	font-size: 28rpx;
+}
+.coupon-amount {
+	font-size: 50rpx;
+	font-weight: bold;
+	line-height: 1;
+}
+.coupon-unit {
+	font-size: 24rpx;
+	margin-left: 4rpx;
+}
+.coupon-condition {
+	font-size: 20rpx;
+	margin-top: 10rpx;
+	text-align: center;
+	opacity: 0.8;
+}
+.coupon-middle {
+	flex: 1;
+	padding: 20rpx;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+}
+.coupon-name {
+	font-size: 30rpx;
+	color: #333;
+	font-weight: bold;
+	margin-bottom: 10rpx;
+	font-family: "FangSong", serif;
+}
+.coupon-desc {
+	font-size: 24rpx;
+	color: #666;
+	margin-bottom: 10rpx;
+}
+.coupon-time {
+	font-size: 22rpx;
+	color: #999;
+}
+.coupon-tag {
+	position: absolute;
+	top: 20rpx;
+	right: 20rpx;
+	font-size: 20rpx;
+	color: #8A3324;
+	border: 1rpx solid #8A3324;
+	padding: 2rpx 10rpx;
+	border-radius: 20rpx;
+	background-color: rgba(138, 51, 36, 0.05);
+}
+.coupon-right {
+	width: 25%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 0 10rpx;
+}
+.coupon-btn {
+	background-color: #8A3324;
+	color: #FFF;
+	font-size: 24rpx;
+	width: 120rpx;
+	height: 60rpx;
+	line-height: 60rpx;
+	text-align: center;
+	border-radius: 30rpx;
+	margin-bottom: 10rpx;
+}
+.coupon-btn[disabled] {
+	background-color: #ccc;
+	color: #fff;
+}
+.coupon-limit {
+	font-size: 20rpx;
+	color: #999;
+}
+
+/* 秒杀优惠券样式 */
+.coupon-speedkill .coupon-left {
+	background-color: #FF5722;
+}
+.coupon-speedkill .coupon-tag {
+	color: #FF5722;
+	border-color: #FF5722;
+	background-color: rgba(255, 87, 34, 0.05);
+}
+.coupon-speedkill .coupon-btn {
+	background-color: #FF5722;
+	-webkit-animation: pulse 1.5s infinite;
+	        animation: pulse 1.5s infinite;
+}
+@-webkit-keyframes pulse {
+0% {
+		-webkit-transform: scale(1);
+		        transform: scale(1);
+}
+50% {
+		-webkit-transform: scale(1.05);
+		        transform: scale(1.05);
+}
+100% {
+		-webkit-transform: scale(1);
+		        transform: scale(1);
+}
+}
+@keyframes pulse {
+0% {
+		-webkit-transform: scale(1);
+		        transform: scale(1);
+}
+50% {
+		-webkit-transform: scale(1.05);
+		        transform: scale(1.05);
+}
+100% {
+		-webkit-transform: scale(1);
+		        transform: scale(1);
+}
+}
+
+/* 禁用优惠券样式 */
+.coupon-disabled {
+	opacity: 0.6;
+}
+.coupon-disabled .coupon-left {
+	background-color: #999;
+}
+
+/* 添加商品按钮 */
+.add-to-cart-wrapper {
+	position: absolute;
+	right: 15rpx;
+	bottom: 15rpx;
+	z-index: 10;
+}
+.add-to-cart {
+	width: 50rpx;
+	height: 50rpx;
+	border-radius: 25rpx;
+	background-color: #8A3324;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.2);
+}
+.add-icon {
+	font-size: 30rpx;
+	font-weight: bold;
+}
+
+/* 购物车底部栏 */
+.cart-bar {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100rpx;
+	background-color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 30rpx;
+	box-shadow: 0 -2rpx 10rpx rgba(0,0,0,0.05);
+	z-index: 100;
+}
+.cart-info {
+	display: flex;
+	align-items: center;
+}
+.cart-icon-wrapper {
+	position: relative;
+	margin-right: 20rpx;
+}
+.cart-icon {
+	font-size: 50rpx;
+}
+.cart-count {
+	position: absolute;
+	top: -10rpx;
+	right: -10rpx;
+	background-color: #FF5722;
+	color: white;
+	font-size: 20rpx;
+	min-width: 32rpx;
+	height: 32rpx;
+	border-radius: 16rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 6rpx;
+}
+.cart-total {
+	display: flex;
+	align-items: baseline;
+}
+.total-label {
+	font-size: 28rpx;
+	color: #666;
+	margin-right: 10rpx;
+}
+.total-price {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #FF5722;
+}
+.checkout-btn {
+	background-color: #8A3324;
+	color: white;
+	font-size: 28rpx;
+	padding: 0 40rpx;
+	height: 70rpx;
+	line-height: 70rpx;
+	border-radius: 35rpx;
+	font-family: "FangSong", serif;
+}
+
+/* 购物车详情弹窗 */
+.cart-detail-popup {
+	position: fixed;
+	bottom: 100rpx;
+	left: 0;
+	width: 100%;
+	height: calc(100% - 100rpx);
+	z-index: 99;
+}
+.cart-detail-mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.cart-detail-content {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	max-height: 70%;
+	background-color: #fff;
+	border-radius: 20rpx 20rpx 0 0;
+	overflow: hidden;
+	z-index: 100;
+	box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+.cart-detail-header {
+	padding: 30rpx;
+	border-bottom: 1rpx solid #f0f0f0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.cart-detail-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+	font-family: "FangSong", serif;
+}
+.cart-detail-clear {
+	font-size: 26rpx;
+	color: #999;
+	padding: 6rpx 16rpx;
+	border: 1rpx solid #eee;
+	border-radius: 30rpx;
+}
+.cart-detail-list {
+	max-height: 600rpx;
+	padding: 20rpx;
+}
+.cart-item {
+	display: flex;
+	align-items: center;
+	padding: 20rpx;
+	border-bottom: 1rpx solid #f5f5f5;
+}
+.cart-item-image {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 10rpx;
+	margin-right: 20rpx;
+}
+.cart-item-info {
+	flex: 1;
+}
+.cart-item-name {
+	font-size: 28rpx;
+	color: #333;
+	margin-bottom: 10rpx;
+	font-family: "FangSong", serif;
+}
+.cart-item-price {
+	font-size: 32rpx;
+	color: #FF5722;
+	font-weight: bold;
+}
+.cart-item-controls {
+	display: flex;
+	align-items: center;
+}
+.quantity-btn {
+	width: 50rpx;
+	height: 50rpx;
+	border-radius: 25rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 28rpx;
+	font-weight: bold;
+}
+.quantity-btn.minus {
+	background-color: #f5f5f5;
+	color: #666;
+}
+.quantity-btn.plus {
+	background-color: #8A3324;
+	color: white;
+}
+.quantity-text {
+	width: 60rpx;
+	text-align: center;
+	font-size: 28rpx;
+}
+

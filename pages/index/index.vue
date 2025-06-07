@@ -45,21 +45,25 @@
 					<image src="/static/icons/arrow-right.png" class="icon-arrow"></image>
 				</view>
 			</view>
+			
 			<!-- Post list -->
 			<view class="post-list">
-				<view class="post-item" v-for="(post, index) in postList" :key="index" @click="viewPostDetail(post.id)">
+				<view v-if="hotPosts.length === 0" class="empty-posts">
+					<text>暂无热门帖子</text>
+				</view>
+				<view class="post-item" v-for="(post, index) in debugHotPosts" :key="post.id || index" @click="post && post.id ? viewPostDetail(post.id) : null">
 					<view class="post-header">
 						<view class="post-user">
-							<image :src="post.avatar" class="post-avatar"></image>
-							<text class="post-username">{{post.username}}</text>
+							<image :src="post.avatar || '/static/images/default-avatar.png'" class="post-avatar"></image>
+							<text class="post-username">{{post.username || '匿名用户'}}</text>
 						</view>
-						<text class="post-time">{{post.time}}</text>
+						<text class="post-time">{{formatDate(post.createTime)}}</text>
 					</view>
-					<text class="post-title">{{post.title}}</text>
-					<text class="post-content">{{post.content}}</text>
+					<text class="post-title">{{post.title || '无标题'}}</text>
+					<text class="post-content">{{post.content || '无内容'}}</text>
 					<view class="post-images" v-if="post.images && post.images.length">
 						<image 
-							v-for="(img, imgIndex) in post.images" 
+							v-for="(img, imgIndex) in post.images.split(',')" 
 							:key="imgIndex" 
 							:src="img" 
 							mode="aspectFill" 
@@ -69,22 +73,20 @@
 					<view class="post-footer">
 						<view class="post-action">
 							<image src="/static/icons/eye.png" class="icon-action"></image>
-							<text>{{post.views}}</text>
+							<text>{{post.views || 0}}</text>
 						</view>
 						<view class="post-action">
 							<image src="/static/icons/comment.png" class="icon-action"></image>
-							<text>{{post.comments}}</text>
+							<text>{{post.comments || 0}}</text>
 						</view>
 						<view class="post-action">
 							<image src="/static/icons/like.png" class="icon-action"></image>
-							<text>{{post.likes}}</text>
+							<text>{{post.likes || 0}}</text>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
-		
-		
 		
 		<!-- 页脚装饰元素 -->
 		<view class="footer-decoration">
@@ -99,7 +101,8 @@
 <script>
 import AiAssistant from '@/components/AiAssistant.vue';
 import CustomNavBar from '@/components/CustomNavBar.vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
+import config from '@/config/index.js';
 
 export default {
 	components: {
@@ -108,16 +111,227 @@ export default {
 	},
 	data() {
 		return {
-			title: '校园益友'
+			title: '校园益友',
+			loading: false
 		}
 	},
 	computed: {
-		...mapState(['bannerList', 'quickAccessList', 'postList', 'shopList'])
+		...mapState(['bannerList', 'quickAccessList', 'shopList']),
+		...mapState('post', ['hotPosts']),
+		userInfo() {
+			return this.$store.state.user.userInfo;
+		},
+		debugHotPosts() {
+			console.log('Hot posts in computed:', this.hotPosts);
+			return this.hotPosts;
+		}
 	},
 	onLoad() {
-		// Initial page loading logic
+		// 检查登录状态
+		this.checkLoginStatus();
 	},
 	methods: {
+		...mapMutations({
+			setUserInfo: 'user/SET_USER_INFO',
+			setToken: 'user/SET_TOKEN'
+		}),
+		...mapActions('post', ['getHotPosts']),
+		
+		// 检查登录状态
+		checkLoginStatus() {
+			// 如果已经登录，则不需要重新登录
+			if (this.userInfo && this.userInfo.token) {
+				console.log('用户已登录');
+				this.fetchPageData();
+				return;
+			}
+			
+			// 未登录，调用微信登录
+			this.wxLogin();
+		},
+		
+		// 微信登录
+		wxLogin() {
+			this.loading = true;
+			
+			// 显示加载提示
+			uni.showLoading({
+				title: '登录中...'
+			});
+			
+			// 调用微信登录接口获取code
+			uni.login({
+				provider: 'weixin',
+				success: (loginRes) => {
+					console.log('微信登录成功，获取到code:', loginRes.code);
+					if (loginRes.code) {
+						// 获取到code后调用后端登录接口
+						this.loginWithCode(loginRes.code);
+					} else {
+						uni.hideLoading();
+						uni.showToast({
+							title: '微信登录失败',
+							icon: 'none'
+						});
+						this.loading = false;
+					}
+				},
+				fail: (err) => {
+					uni.hideLoading();
+					console.error('微信登录失败:', err);
+					uni.showToast({
+						title: '微信登录失败',
+						icon: 'none'
+					});
+					this.loading = false;
+				}
+			});
+		},
+		
+		// 使用code调用后端登录接口
+		loginWithCode(code) {
+			console.log('开始调用后端登录接口，code:', code);
+			
+			uni.request({
+				url: `${config.BaseUrl}/api/user/wxlogin`, // 使用配置文件中的BaseUrl
+				method: 'POST',
+				data: code, // 直接传递code字符串
+				header: {
+					'content-type': 'application/json'
+				},
+				success: (res) => {
+					console.log('登录请求响应:', res);
+					if (res.data && res.data.code === 1) {
+						// 登录成功，获取响应数据
+						const responseData = res.data.data;
+						console.log('登录成功, 响应数据:', responseData);
+						
+						// 保存用户信息到Vuex，传入完整的responseData以便在store中处理嵌套结构
+						this.setUserInfo(responseData);
+						
+						// 同时保存token到store
+						this.setToken(responseData.token);
+						
+						// 将token设置为全局请求头
+						if (responseData.token) {
+							// 设置全局请求头
+							uni.addInterceptor('request', {
+								invoke(args) {
+									// 添加token到请求头
+									args.header = args.header || {};
+									args.header['Authorization'] = `Bearer ${responseData.token}`;
+									return args;
+								}
+							});
+							
+							// 同时将token保存到本地存储，以便下次启动时使用
+							uni.setStorageSync('token', responseData.token);
+							uni.setStorageSync('userInfo', JSON.stringify(responseData));
+							
+							console.log('已设置全局请求头Authorization:', `Bearer ${responseData.token}`);
+						}
+						
+						// 登录成功后连接WebSocket服务器
+						this.connectWebSocket();
+						
+						// 登录成功后加载页面数据
+						this.fetchPageData();
+						
+						uni.showToast({
+							title: '登录成功',
+							icon: 'success'
+						});
+					} else {
+						// 登录失败
+						console.error('登录失败:', res.data);
+						uni.showToast({
+							title: res.data?.message || '登录失败',
+							icon: 'none'
+						});
+					}
+				},
+				fail: (err) => {
+					console.error('请求失败:', err);
+					uni.showToast({
+						title: '网络请求失败',
+						icon: 'none'
+					});
+				},
+				complete: () => {
+					uni.hideLoading();
+					this.loading = false;
+				}
+			});
+		},
+		
+		// 获取页面所需的数据
+		fetchPageData() {
+			// 获取热门帖子数据
+			this.getHotPosts();
+		},
+		
+		// 连接WebSocket服务器
+		connectWebSocket() {
+			// 打印完整的Vuex状态用于调试
+			console.log('Vuex state:', this.$store.state);
+			console.log('User module state:', this.$store.state.user);
+			
+			// 确保有用户ID
+			console.log('当前用户信息:', this.userInfo);
+			
+			// 先尝试从用户对象中获取userId
+			let userId = this.userInfo?.userId;
+			
+			// 如果没有找到userId，则检查是否有嵌套的user对象
+			if (!userId && this.userInfo?.user) {
+				userId = this.userInfo.user.userId;
+				console.log('从嵌套user对象中获取userId:', userId);
+			}
+			
+			if (!userId) {
+				console.error('无法连接WebSocket：缺少用户ID');
+				console.error('用户信息对象:', JSON.stringify(this.userInfo));
+				return;
+			}
+			
+			console.log('使用用户ID连接WebSocket:', userId);
+			const wsUrl = `ws://127.0.0.1:8070/ws/user/${userId}`;
+			
+			console.log('开始连接WebSocket服务器:', wsUrl);
+			
+			// 创建WebSocket连接
+			this.socketTask = uni.connectSocket({
+				url: wsUrl,
+				success: () => {
+					console.log('WebSocket连接成功创建');
+				},
+				fail: (err) => {
+					console.error('WebSocket连接创建失败:', err);
+				}
+			});
+			
+			// 监听WebSocket连接打开
+			uni.onSocketOpen((res) => {
+				console.log('WebSocket连接已打开:', res);
+			});
+			
+			// 监听WebSocket错误
+			uni.onSocketError((err) => {
+				console.error('WebSocket连接错误:', err);
+			});
+			
+			// 监听WebSocket消息
+			uni.onSocketMessage((res) => {
+				console.log('收到WebSocket消息:', res.data);
+				// 在这里处理收到的消息
+			});
+			
+			// 监听WebSocket关闭
+			uni.onSocketClose((res) => {
+				console.log('WebSocket连接已关闭:', res);
+			});
+		},
+		
 		navigateTo(path) {
 			// Ensure path has the correct format
 			if (path.startsWith('./')) {
@@ -134,14 +348,65 @@ export default {
 			}
 		},
 		viewPostDetail(id) {
+			console.log('Attempting to view post detail with ID:', id);
+			
+			if (!id) {
+				console.error('Cannot navigate to post detail: Missing post ID');
+				uni.showToast({
+					title: '帖子ID无效',
+					icon: 'none'
+				});
+				return;
+			}
+			
+			// Instead of using detail route, use detail/index route
 			uni.navigateTo({
-				url: `/pages/forum/detail?id=${id}`
+				url: `/pages/forum/detail/index?id=${id}`
 			});
 		},
 		viewShopDetail(id) {
 			uni.navigateTo({
 				url: `/pages/shops/detail?id=${id}`
 			});
+		},
+		formatDate(timestamp) {
+			if (!timestamp) return '未知时间';
+			
+			try {
+				const date = new Date(timestamp);
+				
+				// 检查日期是否有效
+				if (isNaN(date.getTime())) return '未知时间';
+				
+				const now = new Date();
+				const diff = now - date; // 毫秒差
+				
+				// 如果是今天发布的
+				if (date.toDateString() === now.toDateString()) {
+					const hours = date.getHours();
+					const minutes = date.getMinutes();
+					return `今天 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+				}
+				
+				// 如果是昨天发布的
+				const yesterday = new Date(now);
+				yesterday.setDate(now.getDate() - 1);
+				if (date.toDateString() === yesterday.toDateString()) {
+					return '昨天';
+				}
+				
+				// 如果是最近7天发布的
+				if (diff < 7 * 24 * 60 * 60 * 1000) {
+					const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+					return `${days}天前`;
+				}
+				
+				// 其他情况显示完整日期
+				return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+			} catch (err) {
+				console.error('日期格式化错误:', err);
+				return '未知时间';
+			}
 		}
 	}
 }
@@ -508,5 +773,16 @@ export default {
 		width: 320rpx;
 		height: 60rpx;
 		opacity: 0.6;
+	}
+	
+	.empty-posts {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 60rpx 0;
+		color: #999;
+		font-size: 28rpx;
+		font-family: "FangSong", serif;
 	}
 </style>

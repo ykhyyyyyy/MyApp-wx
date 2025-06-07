@@ -1,0 +1,245 @@
+
+.container {
+	background-color: #F8F7F2;
+	min-height: 100vh;
+}
+.back-button {
+	position: fixed;
+	top: calc(25px + 50rpx);
+	left: 30rpx;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	background-color: rgba(255, 255, 255, 0.8);
+	padding: 10rpx 20rpx;
+	border-radius: 30rpx;
+	box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+	border: 1rpx solid #e0c9d1;
+}
+.back-arrow {
+	font-size: 40rpx;
+	color: #8A3324;
+	font-weight: bold;
+	margin-right: 10rpx;
+}
+.back-text {
+	font-size: 28rpx;
+	color: #333;
+	font-family: "FangSong", serif;
+}
+.header {
+	padding: 20rpx 30rpx;
+}
+.search-box {
+	margin-bottom: 20rpx;
+}
+.search-input-wrapper {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	border-radius: 30rpx;
+	padding: 0 20rpx;
+	border: 1rpx solid #e0c9d1;
+}
+.search-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 10rpx;
+}
+.search-input {
+	flex: 1;
+	border: none;
+	background: transparent;
+	font-size: 28rpx;
+	padding: 16rpx 0;
+	outline: none;
+}
+.categories {
+	display: flex;
+	overflow-x: auto;
+	white-space: nowrap;
+	padding: 0 30rpx 20rpx;
+	margin-bottom: 20rpx;
+}
+.category-item {
+	display: inline-block;
+	padding: 10rpx 30rpx;
+	margin-right: 20rpx;
+	background: #fff;
+	border-radius: 30rpx;
+	border: 1rpx solid #e0c9d1;
+}
+.category-item.active {
+	background: rgba(138, 51, 36, 0.1);
+	border-color: #8A3324;
+}
+.category-text {
+	font-size: 26rpx;
+	color: #666;
+}
+.category-item.active .category-text {
+	color: #8A3324;
+	font-weight: bold;
+}
+
+/* 加载状态 */
+.loading-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+}
+.loading-spinner {
+	width: 60rpx;
+	height: 60rpx;
+	border: 6rpx solid #f3f3f3;
+	border-top: 6rpx solid #7EC4CF;
+	border-radius: 50%;
+	-webkit-animation: spin 1s linear infinite;
+	        animation: spin 1s linear infinite;
+	margin-bottom: 20rpx;
+}
+.loading-spinner.small {
+	width: 40rpx;
+	height: 40rpx;
+	border-width: 4rpx;
+}
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); transform: rotate(0deg);
+}
+100% { -webkit-transform: rotate(360deg); transform: rotate(360deg);
+}
+}
+@keyframes spin {
+0% { -webkit-transform: rotate(0deg); transform: rotate(0deg);
+}
+100% { -webkit-transform: rotate(360deg); transform: rotate(360deg);
+}
+}
+.loading-text {
+	font-size: 28rpx;
+	color: #999;
+}
+.empty-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 0;
+}
+.empty-text {
+	font-size: 28rpx;
+	color: #999;
+}
+
+/* 店铺列表 */
+.shop-list {
+	height: calc(100vh - 350rpx);
+	padding: 0 30rpx;
+}
+.shop-card {
+	display: flex;
+	margin-bottom: 30rpx;
+	background-color: #fff;
+	border-radius: 15rpx;
+	overflow: hidden;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+	border: 1rpx solid #e0c9d1;
+}
+.shop-image {
+	width: 180rpx;
+	height: 180rpx;
+	flex-shrink: 0;
+}
+.shop-info {
+	flex: 1;
+	padding: 20rpx;
+	display: flex;
+	flex-direction: column;
+}
+.shop-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 10rpx;
+}
+.shop-name {
+	font-size: 28rpx;
+	color: #333;
+	font-family: "FangSong", serif;
+	font-weight: bold;
+}
+.shop-badges {
+	display: flex;
+}
+.shop-badge {
+	font-size: 20rpx;
+	padding: 2rpx 8rpx;
+	border-radius: 6rpx;
+	margin-left: 10rpx;
+}
+.shop-badge.official {
+	background-color: rgba(126, 196, 207, 0.1);
+	color: #7EC4CF;
+	border: 1rpx solid #7EC4CF;
+}
+.shop-badge.new {
+	background-color: rgba(138, 51, 36, 0.1);
+	color: #8A3324;
+	border: 1rpx solid #8A3324;
+}
+.shop-description {
+	flex: 1;
+	margin-bottom: 10rpx;
+}
+.description-text {
+	font-size: 24rpx;
+	color: #666;
+	line-height: 1.5;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+.shop-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.shop-rating {
+	display: flex;
+	align-items: center;
+}
+.rating-score {
+	font-size: 24rpx;
+	color: #FF9500;
+	font-weight: bold;
+	margin-right: 6rpx;
+}
+.rating-stars {
+	display: flex;
+	margin-right: 6rpx;
+}
+.star {
+	color: #DDDDDD;
+	font-size: 24rpx;
+}
+.star.active {
+	color: #FF9500;
+}
+.rating-count {
+	font-size: 20rpx;
+	color: #999;
+}
+.shop-enter {
+	font-size: 24rpx;
+	color: #7EC4CF;
+}
+.load-more, .no-more {
+	text-align: center;
+	padding: 30rpx 0;
+	font-size: 26rpx;
+	color: #999;
+}
+

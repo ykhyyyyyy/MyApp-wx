@@ -1,214 +1,201 @@
 <template>
 	<view class="container">
 		<!-- 使用自定义导航栏组件 -->
-		<custom-nav-bar title="墨香书院" subtitle="校园论坛" :show-back="true"></custom-nav-bar>
+		<custom-nav-bar title="论坛" subtitle="Community" :show-back="false" :show-seal="true"></custom-nav-bar>
 		
-		<!-- 添加明显的返回按钮 -->
-		<view class="back-button" @click="goBack">
-			<text class="back-arrow">←</text>
-			<text class="back-text">返回</text>
-		</view>
-		
-		<view class="header">
-			<view class="search-box">
-				<view class="search-input-wrapper">
-					<image src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" class="search-icon"></image>
-					<input class="search-input" type="text" placeholder="搜索帖子" />
-				</view>
+		<!-- 搜索栏 -->
+		<view class="search-section">
+			<view class="search-input-wrapper">
+				<text class="iconfont icon-search search-icon"></text>
+				<input type="text" v-model="searchText" class="search-input" placeholder="搜索帖子..." @confirm="handleSearch" />
 			</view>
+			<button class="publish-btn" @click="goToCreate">发帖</button>
 		</view>
 		
-		<view class="categories">
-			<scroll-view scroll-x class="categories-scroll" show-scrollbar="false">
-				<view class="category-item active">
-					<text>全部</text>
-				</view>
-				<view class="category-item">
-					<text>热门</text>
-				</view>
-				<view class="category-item">
-					<text>美食</text>
-				</view>
-				<view class="category-item">
-					<text>学习</text>
-				</view>
-				<view class="category-item">
-					<text>活动</text>
-				</view>
-				<view class="category-item">
-					<text>交友</text>
+		<!-- 分类选择 -->
+		<scroll-view scroll-x class="categories-scroll">
+			<view class="category-item" :class="{ active: !activeCategory }" @click="selectCategory('')">全部</view>
+			<view class="category-item" 
+				v-for="(category, index) in categories" 
+				:key="index"
+				:class="{ active: activeCategory === category }"
+				@click="selectCategory(category)">
+				{{ category }}
+			</view>
+		</scroll-view>
+		
+		<!-- 热门帖子区域 -->
+		<view class="hot-section">
+			<view class="section-header">
+				<text class="section-title">热门推荐</text>
+				<text class="section-more">查看更多</text>
+			</view>
+			<scroll-view scroll-x class="hot-list">
+				<view class="hot-item" v-for="hot in hotPosts" :key="hot.id" @click="hot && hot.id ? goToDetail(hot.id) : null">
+					<view class="hot-banner"></view>
+					<view class="hot-content">
+						<text class="hot-item-title">{{hot.title}}</text>
+						<text class="hot-desc" v-if="hot.content">{{hot.content.substring(0, 30)}}{{hot.content.length > 30 ? '...' : ''}}</text>
+						<view class="hot-meta">
+							<text class="hot-user">{{hot.username || '匿名用户'}}</text>
+							<text class="hot-views">{{hot.views || 0}}浏览</text>
+						</view>
+					</view>
 				</view>
 			</scroll-view>
 		</view>
 		
-		<!-- 置顶帖子 -->
-		<view class="pinned-posts">
-			<view class="section-title">
-				<image class="pin-icon" src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg"></image>
-				<text>置顶内容</text>
+		<!-- 帖子列表 -->
+		<view class="post-section">
+			<view class="section-header">
+				<text class="section-title">最新帖子</text>
+				<view class="sort-actions">
+					<text class="sort-item" :class="{ active: !orderByHot }" @click="toggleSort(false)">最新</text>
+					<text class="sort-divider">|</text>
+					<text class="sort-item" :class="{ active: orderByHot }" @click="toggleSort(true)">最热</text>
+				</view>
 			</view>
 			
-			<view class="post-card pinned" v-for="(post, index) in pinnedPosts" :key="'pinned-'+index">
-				<view class="post-header">
-					<image class="user-avatar" :src="post.avatar" mode="aspectFill"></image>
-					<view class="post-info">
-						<text class="post-author">{{post.author}}</text>
-						<text class="post-time">{{post.time}}</text>
+			<scroll-view scroll-y class="post-list" @scrolltolower="loadMore" refresher-enabled @refresherrefresh="onRefresh" :refresher-triggered="refreshing">
+				<view v-if="isLoading && posts.length===0" class="loading">
+					<uni-load-more status="loading" content-text="加载中..."></uni-load-more>
+				</view>
+				<view v-else-if="posts.length===0" class="empty">
+					<image src="/static/images/empty-posts.png" mode="aspectFit" class="empty-image"></image>
+					<text class="empty-text">暂无帖子</text>
+				</view>
+				<view v-else>
+					<view class="post-item" v-for="post in posts" :key="post.id" @click="post && post.id ? goToDetail(post.id) : null">
+						<view class="post-header">
+							<text class="post-title">{{post.title}}</text>
+							<text v-if="post.category" class="post-tag">{{post.category}}</text>
+						</view>
+						<text class="post-content">{{post.content}}</text>
+						<view class="post-footer">
+							<view class="post-author">
+								<image class="author-avatar" :src="post.avatar || '/static/images/default-avatar.png'" mode="aspectFill"></image>
+								<text class="author-name">{{post.username || '匿名用户'}}</text>
+							</view>
+							<view class="post-stats">
+								<view class="stat-item">
+									<text class="iconfont icon-message"></text>
+									<text>{{post.comments || 0}}</text>
+								</view>
+								<view class="stat-item">
+									<text class="iconfont icon-view"></text>
+									<text>{{post.views || 0}}</text>
+								</view>
+							</view>
+						</view>
 					</view>
-					<view class="post-badge official">官方</view>
 				</view>
-				<view class="post-content">
-					<text class="post-title">{{post.title}}</text>
-					<text class="post-summary">{{post.summary}}</text>
-				</view>
-				<view class="post-footer">
-					<view class="post-stats">
-						<text class="stat-item">{{post.views}} 浏览</text>
-						<text class="stat-item">{{post.comments}} 评论</text>
-						<text class="stat-item">{{post.likes}} 点赞</text>
-					</view>
-				</view>
-			</view>
+				<uni-load-more v-if="isLoading && posts.length>0" status="loading" content-text="加载中..."></uni-load-more>
+				<uni-load-more v-if="!hasMore && posts.length>0" status="noMore" content-text="没有更多了"></uni-load-more>
+			</scroll-view>
 		</view>
-		
-		<!-- 普通帖子列表 -->
-		<view class="posts-list">
-			<view class="section-title">
-				<text>最新帖子</text>
-			</view>
-			
-			<view class="post-card" v-for="(post, index) in posts" :key="index">
-				<view class="post-header">
-					<image class="user-avatar" :src="post.avatar" mode="aspectFill"></image>
-					<view class="post-info">
-						<text class="post-author">{{post.author}}</text>
-						<text class="post-time">{{post.time}}</text>
-					</view>
-					<view class="post-badge" v-if="post.badge">{{post.badge}}</view>
-				</view>
-				<view class="post-content">
-					<text class="post-title">{{post.title}}</text>
-					<text class="post-summary">{{post.summary}}</text>
-					<view class="post-images" v-if="post.images && post.images.length">
-						<image v-for="(img, imgIndex) in post.images" :key="imgIndex" :src="img" mode="aspectFill" class="post-image"></image>
-					</view>
-				</view>
-				<view class="post-footer">
-					<view class="post-stats">
-						<text class="stat-item">{{post.views}} 浏览</text>
-						<text class="stat-item">{{post.comments}} 评论</text>
-						<text class="stat-item">{{post.likes}} 点赞</text>
-					</view>
-				</view>
-			</view>
-		</view>
-		
-		<!-- 发帖按钮 -->
-		<view class="floating-button">
-			<image src="https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg" class="add-icon"></image>
-		</view>
-		
-		<!-- AI助手组件 -->
-		<ai-assistant></ai-assistant>
 	</view>
 </template>
 
 <script>
-	import AiAssistant from '@/components/AiAssistant.vue';
+	import { mapState, mapActions } from 'vuex';
 	import CustomNavBar from '@/components/CustomNavBar.vue';
 	
 	export default {
 		components: {
-			AiAssistant,
 			CustomNavBar
 		},
 		data() {
 			return {
-				pinnedPosts: [
-					{
-						id: '1',
-						author: '校园管理员',
-						avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						title: '【重要通知】关于校园APP使用指南',
-						summary: '为了帮助同学们更好地使用校园APP，现发布使用指南，请大家仔细阅读并遵守相关规定。',
-						time: '2023-10-15',
-						views: 1256,
-						comments: 45,
-						likes: 320
-					}
-				],
-				posts: [
-					{
-						id: '2',
-						author: '文学爱好者',
-						avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						title: '推荐几本值得一读的中国古典文学作品',
-						summary: '最近在读《红楼梦》，感触良多，想和大家分享一些经典中国文学作品的阅读体验和心得...',
-						time: '2023-10-14',
-						views: 328,
-						comments: 23,
-						likes: 89,
-						badge: '文学'
-					},
-					{
-						id: '3',
-						author: '美食达人',
-						avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						title: '校园周边美食探店报告',
-						summary: '今天去了学校南门新开的那家川菜馆，环境不错，价格实惠，最重要的是味道很正宗！',
-						time: '2023-10-13',
-						views: 456,
-						comments: 32,
-						likes: 105,
-						badge: '美食',
-						images: [
-							'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-							'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-							'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg'
-						]
-					},
-					{
-						id: '4',
-						author: '学习委员',
-						avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						title: '期中复习资料分享',
-						summary: '整理了一些期中考试可能用到的复习资料，希望对大家有所帮助，有问题可以在评论区讨论...',
-						time: '2023-10-12',
-						views: 892,
-						comments: 56,
-						likes: 234,
-						badge: '学习'
-					},
-					{
-						id: '5',
-						author: '社团联合会',
-						avatar: 'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg',
-						title: '本周末校园文化节活动预告',
-						summary: '本周末将在大礼堂举办校园文化节，有舞台表演、美食摊位、手工艺品展示等多种活动，欢迎大家参加！',
-						time: '2023-10-11',
-						views: 675,
-						comments: 28,
-						likes: 143,
-						badge: '活动',
-						images: [
-							'https://ykhyyy.oss-cn-beijing.aliyuncs.com/ht.jpg'
-						]
-					}
-				]
+				page: 1,
+				size: 10,
+				hasMore: true,
+				searchText: '',
+				activeCategory: '',
+				orderByHot: false,
+				refreshing: false,
+				categories: ['校园生活', '学习交流', '兴趣爱好', '求助互助', '闲聊灌水']
+			}
+		},
+		computed: {
+			...mapState('post', ['postList', 'hotPosts', 'isLoading', 'pagination']),
+			posts() {
+				return this.postList;
 			}
 		},
 		methods: {
-			goBack() {
-				uni.navigateBack({
-					delta: 1,
-					fail: () => {
-						// If there's no page to go back to, navigate to home
-						uni.switchTab({
-							url: '/pages/index/index'
-						});
-					}
-				});
+			...mapActions('post', ['getHotPosts', 'getPostPage', 'searchPosts']),
+			async loadPosts(reset = false) {
+				if (reset) {
+					this.page = 1;
+					this.hasMore = true;
+				}
+				
+				if (!this.hasMore) return;
+				
+				// 如果有搜索条件或分类，则使用搜索API
+				if (this.searchText || this.activeCategory) {
+					await this.searchPosts({
+						text: this.searchText,
+						category: this.activeCategory,
+						page: this.page,
+						pageSize: this.size,
+						orderByHot: this.orderByHot
+					});
+				} else {
+					// 否则使用普通分页API
+					await this.getPostPage({ 
+						current: this.page, 
+						size: this.size 
+					});
+				}
+				
+				if (this.pagination && this.pagination.total <= this.posts.length) {
+					this.hasMore = false;
+				} else {
+					this.page++;
+				}
+			},
+			loadMore() {
+				this.loadPosts();
+			},
+			goToDetail(id) {
+				if (!id) {
+					console.error('Cannot navigate to post detail: Missing post ID');
+					uni.showToast({
+						title: '帖子ID无效',
+						icon: 'none'
+					});
+					return;
+				}
+				uni.navigateTo({ url: `/pages/forum/detail/index?id=${id}` });
+			},
+			goToCreate() {
+				uni.navigateTo({ url: '/pages/forum/create' });
+			},
+			async handleSearch() {
+				await this.loadPosts(true);
+			},
+			async selectCategory(category) {
+				this.activeCategory = category;
+				await this.loadPosts(true);
+			},
+			async toggleSort(isHot) {
+				this.orderByHot = isHot;
+				await this.loadPosts(true);
+			},
+			async onRefresh() {
+				this.refreshing = true;
+				await this.loadPosts(true);
+				this.refreshing = false;
+				uni.stopPullDownRefresh();
 			}
+		},
+		onLoad() {
+			this.getHotPosts();
+			this.loadPosts(true);
+		},
+		onPullDownRefresh() {
+			this.loadPosts(true).then(() => uni.stopPullDownRefresh());
 		}
 	}
 </script>
@@ -219,63 +206,27 @@
 		min-height: 100vh;
 	}
 	
-	/* 自定义中国风导航栏 */
-	.custom-nav {
-		position: relative;
-		height: 180rpx;
-		padding-top: var(--status-bar-height);
-		overflow: hidden;
-	}
-	
-	.nav-bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 1;
-	}
-	
-	.nav-content {
-		position: relative;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		z-index: 2;
-	}
-	
-	.nav-title {
-		font-family: "FangSong", serif;
-		font-size: 40rpx;
-		font-weight: bold;
-		color: #333;
-		text-shadow: 2rpx 2rpx 4rpx rgba(255, 255, 255, 0.6);
-	}
-	
-	.nav-subtitle {
-		font-size: 20rpx;
-		color: #666;
-		margin-top: 4rpx;
-	}
-	
-	.header {
+	/* 搜索区域 */
+	.search-section {
 		padding: 20rpx 30rpx;
+		display: flex;
+		align-items: center;
 	}
 	
 	.search-input-wrapper {
+		flex: 1;
 		display: flex;
 		align-items: center;
 		background: #fff;
 		border-radius: 30rpx;
 		padding: 0 20rpx;
-		border: 1rpx solid #e0c9d1;
+		border: 1rpx solid #D7C9AA;
+		margin-right: 20rpx;
 	}
 	
 	.search-icon {
-		width: 32rpx;
-		height: 32rpx;
+		font-size: 32rpx;
+		color: #8A6642;
 		margin-right: 10rpx;
 	}
 	
@@ -284,158 +235,254 @@
 		border: none;
 		background: transparent;
 		font-size: 28rpx;
-		padding: 16rpx 0;
+		color: #333;
+		padding: 12rpx 0;
 		outline: none;
 	}
 	
-	.categories {
-		margin: 0 30rpx 30rpx;
-	}
-	
+	/* 分类滚动区 */
 	.categories-scroll {
 		white-space: nowrap;
+		padding: 0 30rpx 20rpx;
 	}
 	
 	.category-item {
 		display: inline-block;
-		padding: 12rpx 30rpx;
+		padding: 10rpx 30rpx;
 		margin-right: 15rpx;
 		background-color: #fff;
 		border-radius: 30rpx;
-		font-size: 28rpx;
+		font-size: 26rpx;
 		color: #666;
-		border: 1rpx solid #e0e0e0;
+		border: 1rpx solid #D7C9AA;
 	}
 	
 	.category-item.active {
-		background-color: #7EC4CF;
+		background-color: #8A3324;
 		color: #fff;
-		border-color: #7EC4CF;
+		border-color: #8A3324;
 	}
 	
-	.content {
+	/* 发布按钮 */
+	.publish-btn {
+		background: #8A3324;
+		color: #fff;
+		border-radius: 30rpx;
+		padding: 0 30rpx;
+		height: 70rpx;
+		line-height: 70rpx;
+		font-size: 28rpx;
+		margin: 0;
+	}
+	
+	/* 区块标题样式 */
+	.section-header {
 		display: flex;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: center;
-		padding: 100rpx 30rpx;
-	}
-	
-	.placeholder-text {
-		font-size: 30rpx;
-		color: #999;
-		text-align: center;
-	}
-	
-	.pinned-posts, .posts-list {
-		margin: 0 30rpx 30rpx;
+		padding: 0 30rpx 20rpx;
 	}
 	
 	.section-title {
-		display: flex;
-		align-items: center;
-		padding: 20rpx 0;
-		margin-bottom: 15rpx;
-		font-size: 30rpx;
+		font-size: 32rpx;
 		color: #333;
 		font-weight: bold;
+		position: relative;
+		padding-left: 20rpx;
 		font-family: "FangSong", serif;
 	}
 	
-	.pin-icon {
-		width: 32rpx;
-		height: 32rpx;
-		margin-right: 10rpx;
+	.section-title::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 100%;
+		width: 8rpx;
+		background-color: #8A3324;
+		border-radius: 4rpx;
 	}
 	
-	.post-card {
+	.section-more {
+		font-size: 24rpx;
+		color: #8A6642;
+	}
+	
+	.sort-actions {
+		display: flex;
+		align-items: center;
+	}
+	
+	.sort-item {
+		font-size: 26rpx;
+		color: #999;
+		padding: 0 10rpx;
+	}
+	
+	.sort-item.active {
+		color: #8A3324;
+		font-weight: bold;
+	}
+	
+	.sort-divider {
+		color: #ccc;
+		font-size: 24rpx;
+	}
+	
+	/* 热门帖子区域 */
+	.hot-section {
+		padding: 30rpx 0 10rpx;
 		background-color: #fff;
-		border-radius: 15rpx;
-		padding: 20rpx;
 		margin-bottom: 20rpx;
-		box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
-		border: 1rpx solid #e0e0e0;
+		border-radius: 15rpx 15rpx 0 0;
 	}
 	
-	.post-card.pinned {
-		border-left: 6rpx solid #8A3324;
+	.hot-list {
+		white-space: nowrap;
+		padding: 0 0 20rpx 30rpx;
+	}
+	
+	.hot-item {
+		display: inline-block;
+		width: 400rpx;
+		background: #fff;
+		border-radius: 12rpx;
+		margin-right: 20rpx;
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+		border: 1rpx solid #F0EAE0;
+		overflow: hidden;
+	}
+	
+	.hot-banner {
+		height: 160rpx;
+		background: linear-gradient(to right, #9E2B25, #8A3324);
+	}
+	
+	.hot-content {
+		padding: 20rpx;
+	}
+	
+	.hot-item-title {
+		font-size: 28rpx;
+		font-weight: bold;
+		color: #333;
+		display: block;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+	}
+	
+	.hot-desc {
+		font-size: 24rpx;
+		color: #666;
+		margin: 10rpx 0;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		height: 72rpx;
+	}
+	
+	.hot-meta {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10rpx;
+	}
+	
+	.hot-user {
+		font-size: 22rpx;
+		color: #8A6642;
+	}
+	
+	.hot-views {
+		font-size: 22rpx;
+		color: #999;
+	}
+	
+	/* 帖子列表区域 */
+	.post-section {
+		padding: 30rpx 0 0;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+	
+	.post-list {
+		flex: 1;
+		height: 65vh;
+		padding: 0 30rpx;
+	}
+	
+	.post-item {
+		background: #fff;
+		margin-bottom: 20rpx;
+		border-radius: 12rpx;
+		padding: 30rpx;
+		box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+		border: 1rpx solid #F0EAE0;
 	}
 	
 	.post-header {
 		display: flex;
-		align-items: center;
-		margin-bottom: 15rpx;
-	}
-	
-	.user-avatar {
-		width: 70rpx;
-		height: 70rpx;
-		border-radius: 35rpx;
-		margin-right: 15rpx;
-	}
-	
-	.post-info {
-		flex: 1;
-	}
-	
-	.post-author {
-		font-size: 28rpx;
-		color: #333;
-		font-weight: bold;
-	}
-	
-	.post-time {
-		font-size: 22rpx;
-		color: #999;
-		margin-top: 4rpx;
-	}
-	
-	.post-badge {
-		padding: 4rpx 12rpx;
-		background-color: #f0f0f0;
-		border-radius: 6rpx;
-		font-size: 22rpx;
-		color: #666;
-	}
-	
-	.post-badge.official {
-		background-color: rgba(138, 51, 36, 0.1);
-		color: #8A3324;
-	}
-	
-	.post-content {
-		margin-bottom: 15rpx;
+		justify-content: space-between;
+		align-items: flex-start;
 	}
 	
 	.post-title {
-		font-size: 30rpx;
-		color: #333;
+		font-size: 32rpx;
 		font-weight: bold;
-		margin-bottom: 10rpx;
-		font-family: "FangSong", serif;
-	}
-	
-	.post-summary {
-		font-size: 26rpx;
-		color: #666;
-		line-height: 1.5;
-		margin-bottom: 15rpx;
-	}
-	
-	.post-images {
-		display: flex;
-		margin: 0 -5rpx;
-	}
-	
-	.post-image {
+		color: #333;
 		flex: 1;
-		height: 180rpx;
-		margin: 0 5rpx;
-		border-radius: 8rpx;
+		margin-right: 20rpx;
+	}
+	
+	.post-tag {
+		font-size: 22rpx;
+		color: #8A3324;
+		background-color: rgba(138, 51, 36, 0.1);
+		padding: 4rpx 12rpx;
+		border-radius: 20rpx;
+		white-space: nowrap;
+	}
+	
+	.post-content {
+		font-size: 28rpx;
+		color: #666;
+		margin: 16rpx 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
 	
 	.post-footer {
-		border-top: 1rpx solid #f0f0f0;
-		padding-top: 15rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 20rpx;
+	}
+	
+	.post-author {
+		display: flex;
+		align-items: center;
+	}
+	
+	.author-avatar {
+		width: 50rpx;
+		height: 50rpx;
+		border-radius: 25rpx;
+		margin-right: 10rpx;
+		background-color: #eee;
+	}
+	
+	.author-name {
+		font-size: 24rpx;
+		color: #8A6642;
 	}
 	
 	.post-stats {
@@ -443,55 +490,33 @@
 	}
 	
 	.stat-item {
+		display: flex;
+		align-items: center;
+		margin-left: 20rpx;
 		font-size: 24rpx;
 		color: #999;
-		margin-right: 20rpx;
 	}
 	
-	.floating-button {
-		position: fixed;
-		right: 30rpx;
-		bottom: 100rpx;
-		width: 100rpx;
-		height: 100rpx;
-		background-color: #7EC4CF;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.2);
-		z-index: 10;
+	.stat-item text {
+		margin-left: 6rpx;
 	}
 	
-	.add-icon {
-		width: 50rpx;
-		height: 50rpx;
+	/* 空状态和加载 */
+	.loading,
+	.empty {
+		text-align: center;
+		color: #999;
+		padding: 100rpx 0;
 	}
 	
-	.back-button {
-		position: fixed;
-		top: calc(var(--status-bar-height) + 50rpx);
-		left: 30rpx;
-		z-index: 1000;
-		display: flex;
-		align-items: center;
-		background-color: rgba(255, 255, 255, 0.8);
-		padding: 10rpx 20rpx;
-		border-radius: 30rpx;
-		box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
-		border: 1rpx solid #e0c9d1;
+	.empty-image {
+		width: 200rpx;
+		height: 200rpx;
+		margin-bottom: 20rpx;
 	}
 	
-	.back-arrow {
-		font-size: 40rpx;
-		color: #8A3324;
-		font-weight: bold;
-		margin-right: 10rpx;
-	}
-	
-	.back-text {
+	.empty-text {
 		font-size: 28rpx;
-		color: #333;
-		font-family: "FangSong", serif;
+		color: #999;
 	}
 </style> 

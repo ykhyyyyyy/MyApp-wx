@@ -3,7 +3,7 @@
  */
 
 // API请求基础路径
-const BaseUrl = 'http://172.20.10.3:8079';
+const BaseUrl = 'http://127.0.0.1:8079';
 
 // 固定的认证令牌
 const FIXED_TOKEN = 'eyJhbGciOiJIUzM4NCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTc0ODUyMzQ3OX0.cAVl0m4KnJFWRkV-Z9qylW03H_VJqyhzYIByHROtliLpfPk4QQg0FZ8_GcOMUFiP';
